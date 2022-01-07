@@ -1,0 +1,657 @@
+Old version =  YOURLS-1.7.6
+New version =  YOURLS-1.7.9
+
+'YOURLS-1.7.9/admin/admin-ajax.php' rimosso
+'YOURLS-1.7.9/admin/index.php' rimosso
+'YOURLS-1.7.9/admin/upgrade.php' rimosso
+'YOURLS-1.7.9/composer.json' rimosso
+'YOURLS-1.7.9/composer.lock' rimosso
+'YOURLS-1.7.9/css/cal.css' rimosso
+'YOURLS-1.7.9/css/infos.css' rimosso
+'YOURLS-1.7.9/css/palette.png' rimosso
+'YOURLS-1.7.9/css/share.css' rimosso
+'YOURLS-1.7.9/.editorconfig' rimosso
+'YOURLS-1.7.9/images/accept.png' rimosso
+'YOURLS-1.7.9/images/asc.gif' rimosso
+'YOURLS-1.7.9/images/bg.gif' rimosso
+'YOURLS-1.7.9/images/blank.gif' rimosso
+'YOURLS-1.7.9/images/cancel.png' rimosso
+'YOURLS-1.7.9/images/chart_bar_add.png' rimosso
+'YOURLS-1.7.9/images/chart_bar.png' rimosso
+'YOURLS-1.7.9/images/copy-large.png' rimosso
+'YOURLS-1.7.9/images/copy.png' rimosso
+'YOURLS-1.7.9/images/delete.png' rimosso
+'YOURLS-1.7.9/images/desc.gif' rimosso
+'YOURLS-1.7.9/images/error.png' rimosso
+'YOURLS-1.7.9/images/facebook.png' rimosso
+'YOURLS-1.7.9/images/favicon.gif' rimosso
+'YOURLS-1.7.9/images/filter.gif' rimosso
+'YOURLS-1.7.9/images/loading.gif' rimosso
+'YOURLS-1.7.9/images/pencil.png' rimosso
+'YOURLS-1.7.9/images/share.png' rimosso
+'YOURLS-1.7.9/images/twitter.png' rimosso
+'YOURLS-1.7.9/images/yourls-logo.png' rimosso
+'YOURLS-1.7.9/images/yourls-logo.svg' rimosso
+'YOURLS-1.7.9/includes/auth.php' rimosso
+'YOURLS-1.7.9/includes/Config/InitDefaults.php' rimosso
+'YOURLS-1.7.9/includes/Config/Init.php' rimosso
+'YOURLS-1.7.9/includes/Database/YDB.php' rimosso
+'YOURLS-1.7.9/includes/Exceptions/ConfigException.php' rimosso
+'YOURLS-1.7.9/includes/functions-compat.php' rimosso
+'YOURLS-1.7.9/includes/functions-deprecated.php' rimosso
+'YOURLS-1.7.9/includes/functions-kses.php' rimosso
+'YOURLS-1.7.9/includes/functions-l10n.php' rimosso
+'YOURLS-1.7.9/includes/functions-upgrade.php' rimosso
+'YOURLS-1.7.9/includes/functions-xml.php' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_a1.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_a2.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ac.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ad.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ae.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_af.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ag.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ai.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_al.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_am.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_an.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ao.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ap.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_aq.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ar.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_as.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_at.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_au.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_aw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ax.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_az.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ba.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bb.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bd.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_be.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bh.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bi.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bj.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bl.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bo.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_br.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bs.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bt.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bv.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bx.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_by.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_bz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ca.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cc.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cd.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ch.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ci.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ck.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cl.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_co.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cs.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cv.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cx.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cy.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_cz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_de.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_dj.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_dk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_dm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_do.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_dz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ec.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ee.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_eg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_eh.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_er.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_es.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_et.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_eu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_fi.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_fj.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_fk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_fm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_fo.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_fr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_fx.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ga.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gb.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gd.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ge.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gh.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gi.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gl.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gp.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gq.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gs.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gt.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_gy.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_hk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_hm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_hn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_hr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ht.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_hu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_id.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ie.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_il.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_im.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_in.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_io.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_iq.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ir.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_is.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_it.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_je.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_jm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_jo.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_jp.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ke.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_kg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_kh.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ki.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_km.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_kn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_kp.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_kr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_kw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ky.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_kz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_la.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_lb.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_lc.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_le.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_li.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_lk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_lr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ls.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_lt.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_lu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_lv.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ly.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ma.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mc.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_md.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_me.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mh.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ml.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mo.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mp.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mq.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ms.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mt.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mv.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mx.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_my.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_mz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_na.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_nc.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ne.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_nf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ng.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ni.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_nl.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_no.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_np.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_nr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_nu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_nz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_o1.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_om.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pa.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pe.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ph.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pl.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ps.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pt.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_pw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_py.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_qa.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_re.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ro.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_rs.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ru.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_rw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sa.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sb.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sc.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sd.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_se.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sh.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_si.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sj.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sl.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_so.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_st.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_su.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sv.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sy.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_sz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tc.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_td.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_th.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tj.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tl.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_to.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tp.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tt.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tv.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_tz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ua.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ug.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_uk.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_um.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_us.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_uy.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_uz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_va.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_vc.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ve.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_vg.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_vi.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_vn.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_vu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_wf.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ws.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_ye.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_yt.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_yu.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_za.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_zm.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_zr.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_zw.gif' rimosso
+'YOURLS-1.7.9/includes/geo/flags/flag_zz.gif' rimosso
+'YOURLS-1.7.9/includes/geo/GeoLite2-Country.mmdb' rimosso
+'YOURLS-1.7.9/includes/geo/README.md' rimosso
+'YOURLS-1.7.9/includes/load-yourls.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/ConnectionLocatorInterface.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/ConnectionLocator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Exception/CannotBindValue.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Exception/CannotDisconnect.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Exception/ConnectionNotFound.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Exception/MissingParameter.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Exception.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/ExtendedPdoInterface.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/ExtendedPdo.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Iterator/AbstractIterator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Iterator/AllIterator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Iterator/AssocIterator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Iterator/ColIterator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Iterator/ObjectsIterator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Iterator/PairsIterator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/PdoInterface.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/ProfilerInterface.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Profiler.php' rimosso
+'YOURLS-1.7.9/includes/vendor/aura/sql/src/Rebuilder.php' rimosso
+'YOURLS-1.7.9/includes/vendor/autoload.php' rimosso
+'YOURLS-1.7.9/includes/vendor/build-script/yourls-build.sh' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/autoload_classmap.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/autoload_files.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/autoload_namespaces.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/autoload_psr4.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/autoload_real.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/autoload_static.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/ca-bundle/composer.json' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/ca-bundle/LICENSE' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/ca-bundle/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/ca-bundle/res/cacert.pem' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/ca-bundle/src/CaBundle.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/ClassLoader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/installed.json' rimosso
+'YOURLS-1.7.9/includes/vendor/composer/LICENSE' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Database/Reader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Exception/AddressNotFoundException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Exception/AuthenticationException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Exception/GeoIp2Exception.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Exception/HttpException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Exception/InvalidRequestException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Exception/OutOfQueriesException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/AbstractModel.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/AnonymousIp.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/Asn.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/City.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/ConnectionType.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/Country.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/Domain.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/Enterprise.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/Insights.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/Isp.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/ProviderInterface.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/AbstractPlaceRecord.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/AbstractRecord.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/City.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/Continent.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/Country.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/Location.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/MaxMind.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/Postal.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/RepresentedCountry.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/Subdivision.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/Traits.php' rimosso
+'YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/WebService/Client.php' rimosso
+'YOURLS-1.7.9/includes/vendor/jakeasmith/http_build_url/readme.md' rimosso
+'YOURLS-1.7.9/includes/vendor/jakeasmith/http_build_url/src/http_build_url.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/AuthenticationException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/HttpException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/InsufficientFundsException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/InvalidInputException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/InvalidRequestException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/IpAddressNotFoundException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/PermissionRequiredException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/WebServiceException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/WebService/Client.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/WebService/Http/CurlRequest.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/WebService/Http/RequestFactory.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/WebService/Http/Request.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind-db/reader/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/Db/Reader/Decoder.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/Db/Reader/InvalidDatabaseException.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/Db/Reader/Metadata.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/Db/Reader/Util.php' rimosso
+'YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/Db/Reader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/ozh/bookmarkletgen/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/ozh/bookmarkletgen/src/Ozh/Bookmarkletgen/Bookmarkletgen.php' rimosso
+'YOURLS-1.7.9/includes/vendor/ozh/phpass/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/ozh/phpass/src/Ozh/Phpass/PasswordHash.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/MO.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Parser/PluralForms.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/PO.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/CachedFileReader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/CachedIntFileReader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/FileReader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/NOOPReader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/Reader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/StreamInterface.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/StringReader.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Translations/EntryTranslations.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Translations/GettextTranslations.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Translations/NOOPTranslations.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Translations/TranslationsInterface.php' rimosso
+'YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Translations/Translations.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Auth/Basic.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Auth.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Cookie/Jar.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Cookie.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/304.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/305.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/306.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/400.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/401.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/402.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/403.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/404.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/405.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/406.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/407.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/408.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/409.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/410.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/411.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/412.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/413.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/414.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/415.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/416.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/417.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/418.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/428.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/429.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/431.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/500.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/501.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/502.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/503.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/504.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/505.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/511.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/Unknown.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/Transport/cURL.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/Transport.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Hooker.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Hooks.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/IDNAEncoder.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/IPv6.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/IRI.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Proxy/HTTP.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Proxy.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Response/Headers.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Response.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Session.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/SSL.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Transport/cacert.pem' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Transport/cURL.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Transport/fsockopen.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Transport.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Utility/CaseInsensitiveDictionary.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Utility/FilteredIterator.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests.php' rimosso
+'YOURLS-1.7.9/includes/vendor/rmccue/requests/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/bootstrap.php' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/composer.json' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/LICENSE' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/Mbstring.php' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/README.md' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/Resources/unidata/lowerCase.php' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/Resources/unidata/titleCaseRegexp.php' rimosso
+'YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/Resources/unidata/upperCase.php' rimosso
+'YOURLS-1.7.9/js/clipboard.min.js' rimosso
+'YOURLS-1.7.9/js/common.js' rimosso
+'YOURLS-1.7.9/js/infos.js' rimosso
+'YOURLS-1.7.9/js/insert.js' rimosso
+'YOURLS-1.7.9/js/jquery-1.3.2.min.js' rimosso
+'YOURLS-1.7.9/js/jquery-1.4.3.min.js' rimosso
+'YOURLS-1.7.9/js/jquery-1.6.1.min.js' rimosso
+'YOURLS-1.7.9/js/jquery-1.8.2.min.js' rimosso
+'YOURLS-1.7.9/js/jquery-1.9.1.min.js' rimosso
+'YOURLS-1.7.9/js/jquery-2.2.4.min.js' rimosso
+'YOURLS-1.7.9/js/jquery-3.3.1.min.js' rimosso
+'YOURLS-1.7.9/js/jquery-3.tablesorter.min.js' rimosso
+'YOURLS-1.7.9/js/jquery.cal.js' rimosso
+'YOURLS-1.7.9/js/jquery.notifybar.js' rimosso
+'YOURLS-1.7.9/js/tablesorte.js' rimosso
+'YOURLS-1.7.9/LICENSE' rimosso
+'YOURLS-1.7.9/sample-public-api.txt' rimosso
+'YOURLS-1.7.9/sample-public-front-page.txt' rimosso
+'YOURLS-1.7.9/sample-remote-api-call.txt' rimosso
+'YOURLS-1.7.9/user/config-sample.php' rimosso
+'YOURLS-1.7.9/user/index.html' rimosso
+'YOURLS-1.7.9/user/languages/index.html' rimosso
+'YOURLS-1.7.9/user/plugins/hyphens-in-urls/plugin.php' rimosso
+'YOURLS-1.7.9/user/plugins/hyphens-in-urls/README.md' rimosso
+'YOURLS-1.7.9/user/plugins/index.html' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_ants.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_boobs.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_circles.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_cross.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_diag.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_fuzzy_bits.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_fuzzy.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_life.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/img/bg_yourls.png' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/plugin.php' rimosso
+'YOURLS-1.7.9/user/plugins/random-bg/README.md' rimosso
+'YOURLS-1.7.9/user/plugins/random-shorturls/plugin.php' rimosso
+'YOURLS-1.7.9/user/plugins/random-shorturls/README.md' rimosso
+'YOURLS-1.7.9/user/plugins/sample-page/plugin.php' rimosso
+'YOURLS-1.7.9/user/plugins/sample-page/README.md' rimosso
+'YOURLS-1.7.9/user/plugins/sample-plugin/plugin.php' rimosso
+'YOURLS-1.7.9/user/plugins/sample-plugin/README.md' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/css/toolbar.css' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/img/close_button.gif' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/img/close_button_red.gif' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/img/favicon.gif' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/img/toolbar_bg.png' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/js/toolbar.js' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/plugin.php' rimosso
+'YOURLS-1.7.9/user/plugins/sample-toolbar/README.md' rimosso
+'YOURLS-1.7.9/yourls-api.php' rimosso
+'YOURLS-1.7.9/yourls-go.php' rimosso
+'YOURLS-1.7.9/yourls-infos.php' rimosso
+'YOURLS-1.7.9/yourls-loader.php' rimosso
+  adding: YOURLS-1.7.9/ (stored 0%)
+  adding: YOURLS-1.7.9/admin/ (stored 0%)
+  adding: YOURLS-1.7.9/admin/plugins.php (deflated 63%)
+  adding: YOURLS-1.7.9/admin/install.php (deflated 58%)
+  adding: YOURLS-1.7.9/admin/tools.php (deflated 77%)
+  adding: YOURLS-1.7.9/includes/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/Admin/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/Admin/Logger.php (deflated 64%)
+  adding: YOURLS-1.7.9/includes/geo/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/geo/flags/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/functions-install.php (deflated 67%)
+  adding: YOURLS-1.7.9/includes/Config/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/Config/Config.php (deflated 72%)
+  adding: YOURLS-1.7.9/includes/version.php (deflated 31%)
+  adding: YOURLS-1.7.9/includes/functions-formatting.php (deflated 68%)
+  adding: YOURLS-1.7.9/includes/functions-plugins.php (deflated 72%)
+  adding: YOURLS-1.7.9/includes/Database/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/Database/Options.php (deflated 72%)
+  adding: YOURLS-1.7.9/includes/class-mysql.php (deflated 55%)
+  adding: YOURLS-1.7.9/includes/functions-api.php (deflated 73%)
+  adding: YOURLS-1.7.9/includes/functions-infos.php (deflated 66%)
+  adding: YOURLS-1.7.9/includes/functions-html.php (deflated 72%)
+  adding: YOURLS-1.7.9/includes/functions-http.php (deflated 69%)
+  adding: YOURLS-1.7.9/includes/functions-auth.php (deflated 71%)
+  adding: YOURLS-1.7.9/includes/Exceptions/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/aura/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/aura/sql/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/aura/sql/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/aura/sql/src/Iterator/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/aura/sql/src/Exception/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/bookmarkletgen/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/bookmarkletgen/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/bookmarkletgen/src/Ozh/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/bookmarkletgen/src/Ozh/Bookmarkletgen/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/phpass/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/phpass/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/phpass/src/Ozh/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/ozh/phpass/src/Ozh/Phpass/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/pomo/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/pomo/pomo/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/pomo/pomo/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Translations/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Parser/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/pomo/pomo/src/Streams/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/WebService/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/WebService/Http/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind/web-service-common/src/Exception/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/jakeasmith/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/jakeasmith/http_build_url/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/jakeasmith/http_build_url/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/symfony/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/Resources/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/symfony/polyfill-mbstring/Resources/unidata/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Auth/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Proxy/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Transport/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Utility/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/Transport/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Exception/HTTP/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Response/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/rmccue/requests/library/Requests/Cookie/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/geoip2/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Database/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/WebService/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Record/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Exception/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/geoip2/geoip2/src/Model/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind-db/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind-db/reader/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/Db/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/maxmind-db/reader/src/MaxMind/Db/Reader/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/build-script/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/composer/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/composer/ca-bundle/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/composer/ca-bundle/src/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/vendor/composer/ca-bundle/res/ (stored 0%)
+  adding: YOURLS-1.7.9/includes/functions.php (deflated 71%)
+  adding: YOURLS-1.7.9/images/ (stored 0%)
+  adding: YOURLS-1.7.9/readme.html (deflated 67%)
+  adding: YOURLS-1.7.9/css/ (stored 0%)
+  adding: YOURLS-1.7.9/css/style.css (deflated 73%)
+  adding: YOURLS-1.7.9/css/tablesorter.css (deflated 70%)
+  adding: YOURLS-1.7.9/js/ (stored 0%)
+  adding: YOURLS-1.7.9/js/share.js (deflated 55%)
+  adding: YOURLS-1.7.9/user/ (stored 0%)
+  adding: YOURLS-1.7.9/user/languages/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/hyphens-in-urls/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/sample-toolbar/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/sample-toolbar/img/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/sample-toolbar/css/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/sample-toolbar/js/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/sample-page/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/sample-plugin/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/random-bg/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/random-bg/img/ (stored 0%)
+  adding: YOURLS-1.7.9/user/plugins/random-shorturls/ (stored 0%)
+  adding: YOURLS-1.7.9/user/pages/ (stored 0%)
+  adding: YOURLS-1.7.9/user/pages/index.html (deflated 27%)
+  adding: YOURLS-1.7.9/user/pages/examplepage.php (deflated 32%)
+  adding: YOURLS-1.7.9/sample-robots.txt (deflated 48%)
