@@ -4,6 +4,8 @@
 
 **YOURLS Diff** is a Python script that simplifies updating a YOURLS installation via FTP by creating a ZIP package containing only the new or modified files between two release tags.
 
+If you want to take advantage of the patches that are automatically created by this script and this repository (via [this GitHub Action](.github/workflows/patch.yml)), you can take a look at [Releases](https://github.com/gioxx/YOURLS-diff/releases). The most recent update package will always be available by pointing to the [Latest tag](https://github.com/gioxx/YOURLS-diff/releases/latest). The script runs every day at midnight.
+
 ## Features
 
 - Automatically downloads the two ZIP archives (`old` and `new`) from the YOURLS GitHub repository.  
