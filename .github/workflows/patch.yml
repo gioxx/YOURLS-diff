@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Determine upstream tags & whether to proceed
         id: check
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const ups = await github.rest.repos.listReleases({
