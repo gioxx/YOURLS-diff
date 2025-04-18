@@ -77,6 +77,7 @@ The main script is called `YOURLS-diff_CreatePackage.py` and accepts the followi
 ```text
 ├── YOURLS-diff_CreatePackage.py   # Main Python script
 ├── requirements.txt               # Python dependencies
+├── LICENSE                        # License used for this repository
 ├── README.md                      # This documentation
 └── README_IT.md                   # Italian documentation
 ```

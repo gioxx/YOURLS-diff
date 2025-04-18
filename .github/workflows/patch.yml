@@ -1,0 +1,84 @@
+name: Auto‑generate YOURLS patch
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check for new YOURLS release
+    runs-on: ubuntu-latest
+    outputs:
+      old:   ${{ steps.check.outputs.old }}
+      new:   ${{ steps.check.outputs.new }}
+      proceed: ${{ steps.check.outputs.proceed }}
+    steps:
+      - name: Determine upstream tags & whether to proceed
+        id: check
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const ups = await github.rest.repos.listReleases({
+              owner: 'YOURLS',
+              repo: 'YOURLS',
+              per_page: 2
+            });
+            if (ups.data.length < 2) {
+              throw new Error("Upstream YOURLS has fewer than 2 releases");
+            }
+            const newTag = ups.data[0].tag_name;
+            const oldTag = ups.data[1].tag_name;
+
+            let exists = true;
+            try {
+              await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: newTag
+              });
+            } catch (e) {
+              if (e.status === 404) exists = false;
+            }
+
+            core.setOutput('new', newTag);
+            core.setOutput('old', oldTag);
+            core.setOutput('proceed', exists ? 'false' : 'true');
+
+  create_patch:
+    name: Generate & publish patch
+    needs: check
+    if: needs.check.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate patch and manifest
+        run: |
+          OLD=${{ needs.check.outputs.old }}
+          NEW=${{ needs.check.outputs.new }}
+          python YOURLS-diff_CreatePackage.py --old "$OLD" --new "$NEW"
+        env:
+          PYTHONUNBUFFERED: '1'
+
+      - name: Create Release & Upload Patch
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.check.outputs.new }}
+          name: "${{ needs.check.outputs.old }} to ${{ needs.check.outputs.new }}"
+          bodyFile: YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.txt
+          draft: false
+          prerelease: false
+          artifacts: |
+            YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

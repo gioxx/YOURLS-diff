@@ -77,6 +77,7 @@ Lo script principale si chiama `YOURLS-diff_CreatePackage.py` e accetta i seguen
 ```text
 ├── YOURLS-diff_CreatePackage.py   # Script Python principale
 ├── requirements.txt               # Dipendenze Python
+├── LICENSE                        # La licenza utilizzata per questo repository
 ├── README.md                      # Questa documentazione, in inglese
 └── README_IT.md                   # Questa documentazione
 ```
