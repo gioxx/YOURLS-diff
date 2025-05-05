@@ -15,7 +15,7 @@ Options:
     --output     Output ZIP filename (default: YOURLS-update-OLD-to-NEW.zip)
     --no-verify  Disable SSL certificate verification (not recommended)
 
-Author: Your Name
+Author: Gioxx
 Repo:   https://github.com/gioxx/YOURLS-diff
 License: MIT
 """
