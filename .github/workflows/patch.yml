@@ -9,6 +9,8 @@ jobs:
   check:
     name: Check for new YOURLS release
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       old:   ${{ steps.check.outputs.old }}
       new:   ${{ steps.check.outputs.new }}
@@ -48,6 +50,8 @@ jobs:
   create_patch:
     name: Generate & publish patch
     needs: check
+    permissions:
+      contents: write
     if: needs.check.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     steps:
