@@ -12,6 +12,7 @@ Se vuoi sfruttare le patch che vengono create automaticamente da questo script e
 - Confronta i file e individua quelli **nuovi** o **modificati**.  
 - Genera un pacchetto ZIP contenente solo i file differenziati.  
 - Produce un file manifest esterno (`.txt`) con l'elenco dei file cambiati.  
+- Genera uno script bash che ti permette di aggiornare la tua istanza YOURLS via rsync e SSH. 
 - Supporta la verifica SSL con possibilità di disabilitarla tramite flag.
 
 ## Requisiti
@@ -53,6 +54,7 @@ Lo script principale si chiama `YOURLS-diff_CreatePackage.py` e accetta i seguen
 | `--new`        | Tag della release di destinazione. Se omesso, viene usato `latest`.          | `--new 1.9.0`                         |
 | `--output`     | Nome del file ZIP di output. Default: `YOURLS-update-OLD-to-NEW.zip`.       | `--output diff.zip`                   |
 | `--no-verify`  | Disabilita la verifica del certificato SSL. _Non_ raccomandato.             | `--no-verify`                         |
+| `--summary`    | Genera un file di testo riassuntivo con i dettagli della patch.             | `--summary`                         |
 
 ### Esempi di esecuzione
 

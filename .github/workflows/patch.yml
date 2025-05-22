@@ -70,7 +70,8 @@ jobs:
         run: |
           OLD=${{ needs.check.outputs.old }}
           NEW=${{ needs.check.outputs.new }}
-          python YOURLS-diff_CreatePackage.py --old "$OLD" --new "$NEW"
+          python YOURLS-diff_CreatePackage.py --old "$OLD" --new "$NEW" --summary
+
         env:
           PYTHONUNBUFFERED: '1'
 
@@ -79,7 +80,7 @@ jobs:
         with:
           tag: ${{ needs.check.outputs.new }}
           name: "${{ needs.check.outputs.old }} to ${{ needs.check.outputs.new }}"
-          bodyFile: YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.txt
+          bodyFile: YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.summary.txt
           draft: false
           prerelease: false
           artifacts: |
