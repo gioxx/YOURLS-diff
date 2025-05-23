@@ -75,6 +75,19 @@ jobs:
         env:
           PYTHONUNBUFFERED: '1'
 
+      - name: Determine which artifacts to upload
+        id: build_artifacts
+        run: |
+          OLD=${{ needs.check.outputs.old }}
+          NEW=${{ needs.check.outputs.new }}
+          ARTIFACTS="YOURLS-update-$OLD-to-$NEW.zip YOURLS-update-$OLD-to-$NEW.txt"
+
+          if [ -f "YOURLS-update-$OLD-to-$NEW.removed.txt" ]; then
+            ARTIFACTS="$ARTIFACTS YOURLS-update-$OLD-to-$NEW.removed.txt"
+          fi
+
+          echo "artifact_files=$ARTIFACTS" >> $GITHUB_OUTPUT
+  
       - name: Create Release & Upload Patch
         uses: ncipollo/release-action@v1
         with:
@@ -83,7 +96,7 @@ jobs:
           bodyFile: YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.summary.txt
           draft: false
           prerelease: false
-          artifacts: |
-            YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.zip
+          artifacts: ${{ steps.build_artifacts.outputs.artifact_files }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
