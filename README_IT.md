@@ -1,23 +1,28 @@
 # YOURLS Diff
 
-[Il file Readme è disponibile anche in inglese](README.md).
+[Il file README è disponibile anche in inglese](README.md).
 
-**YOURLS Diff** è uno script Python che semplifica l'aggiornamento di un'installazione YOURLS tramite FTP, creando un pacchetto ZIP con solo i file nuovi o modificati tra due tag di release.
+![Patch Build](https://github.com/gioxx/YOURLS-diff/actions/workflows/patch.yml/badge.svg)
 
-Se vuoi sfruttare le patch che vengono create automaticamente da questo script e questo repository (tramite [questa GitHub Action](.github/workflows/patch.yml)), puoi dare un'occhiata alle [Releases](https://github.com/gioxx/YOURLS-diff/releases). Il pacchetto di aggiornamento più recente sarà sempre disponibile puntando al [tag Latest](https://github.com/gioxx/YOURLS-diff/releases/latest). Lo script viene eseguito ogni giorno a mezzanotte. 
+**YOURLS Diff** è uno script Python che semplifica l'aggiornamento di un'installazione YOURLS via FTP creando un archivio ZIP contenente solo i file nuovi o modificati tra due tag di rilascio.
+
+Se vuoi approfittare delle patch create automaticamente da questo script e da questo repository (tramite [questa GitHub Action](.github/workflows/patch.yml)), puoi consultare la sezione [Releases](https://github.com/gioxx/YOURLS-diff/releases). Il pacchetto più recente sarà sempre disponibile tramite il [Latest tag](https://github.com/gioxx/YOURLS-diff/releases/latest). Lo script viene eseguito ogni giorno a mezzanotte.
 
 ## Caratteristiche
 
 - Scarica automaticamente i due archivi ZIP (`old` e `new`) dal repository GitHub di YOURLS.  
-- Confronta i file e individua quelli **nuovi** o **modificati**.  
-- Genera un pacchetto ZIP contenente solo i file differenziati.  
-- Produce un file manifest esterno (`.txt`) con l'elenco dei file cambiati.  
-- Supporta la verifica SSL con possibilità di disabilitarla tramite flag.
+- Confronta i file e identifica quelli **nuovi**, **modificati** e **rimossi**.  
+- Genera un pacchetto ZIP contenente solo i file modificati.  
+- Produce un file manifest esterno (`.txt`) con l'elenco dei file modificati.  
+- Genera un file `.removed.txt` se sono stati eliminati file nella nuova versione.  
+- Crea uno script di deploy Bash (`.sh`) per aggiornare l'istanza YOURLS tramite rsync e SSH.  
+- Supporta la verifica del certificato SSL con possibilità di disabilitarla.  
+- (Opzionale) Genera uno script compatibile con WinSCP (`.winscp.txt`) per utenti Windows che vogliono scaricare ed eliminare file via SFTP.
 
 ## Requisiti
 
 - Python **3.6+**  
-- Librerie Python elencate in `requirements.txt`:
+- Librerie Python indicate in `requirements.txt`:
   ```txt
   requests>=2.20.0
   urllib3>=1.25.0
@@ -45,45 +50,67 @@ Se vuoi sfruttare le patch che vengono create automaticamente da questo script e
 
 ## Utilizzo
 
-Lo script principale si chiama `YOURLS-diff_CreatePackage.py` e accetta i seguenti parametri:
+Lo script principale si chiama `YOURLS-diff_CreatePackage.py` e accetta le seguenti opzioni:
 
-| Opzione        | Descrizione                                                                 | Esempio                               |
-|----------------|-----------------------------------------------------------------------------|---------------------------------------|
-| `--old`        | **(obbligatorio)** Tag della release di partenza (es. `1.8.10`).            | `--old 1.8.10`                        |
-| `--new`        | Tag della release di destinazione. Se omesso, viene usato `latest`.          | `--new 1.9.0`                         |
-| `--output`     | Nome del file ZIP di output. Default: `YOURLS-update-OLD-to-NEW.zip`.       | `--output diff.zip`                   |
-| `--no-verify`  | Disabilita la verifica del certificato SSL. _Non_ raccomandato.             | `--no-verify`                         |
+| Opzione           | Descrizione                                                                                       | Esempio                              |
+|-------------------|----------------------------------------------------------------------------------------------------|--------------------------------------|
+| `--old`           | **(obbligatorio)** Tag della versione di partenza (es: `1.8.10`).                                  | `--old 1.8.10`                       |
+| `--new`           | Tag della versione di destinazione. Se omesso, viene usato `latest`.                              | `--new 1.9.0`                        |
+| `--output`        | Nome del file ZIP in uscita. Default: `YOURLS-update-OLD-to-NEW.zip`.                             | `--output diff.zip`                 |
+| `--no-verify`     | Disattiva la verifica SSL (non consigliato).                                                      | `--no-verify`                       |
+| `--summary`       | Genera un file `.summary.txt` con il riepilogo delle modifiche.                                   | `--summary`                         |
+| `--only-removed`  | Genera solo il file `.removed.txt` (se ci sono file eliminati).<br>Genera anche lo script di rimozione remoto (`.sh`). | `--only-removed` |
+| `--winscp`        | Genera uno script `.winscp.txt` per scaricare ed eliminare i file rimossi (richiede `--only-removed`). Utile per utenti Windows. | `--winscp` |
 
-### Esempi di esecuzione
+### Esempi
 
-- **Aggiornare da 1.8.10 all'ultima release**:
+- **Aggiornare dalla 1.8.10 all'ultima versione disponibile**:
   ```bash
   python YOURLS-diff_CreatePackage.py --old 1.8.10
   ```
-  Genera:
-  - `YOURLS-update-1.8.10-to-<latest>.zip`  
-  - `YOURLS-update-1.8.10-to-<latest>.txt` (manifest)
 
-- **Aggiornare da 1.8.10 a 1.9.0 e nome personalizzato**:
+- **Aggiornare dalla 1.8.10 alla 1.9.0 con nome ZIP personalizzato**:
   ```bash
   python YOURLS-diff_CreatePackage.py --old 1.8.10 --new 1.9.0 --output update.zip
   ```
 
-- **Disabilitare la verifica SSL**:
+- **Generare solo la lista dei file rimossi e lo script di rimozione**:
+  ```bash
+  python YOURLS-diff_CreatePackage.py --old 1.8.10 --only-removed
+  ```
+
+- **Includere anche lo script WinSCP per la cancellazione remota**:
+  ```bash
+  python YOURLS-diff_CreatePackage.py --old 1.8.10 --only-removed --winscp
+  ```
+
+- **Disabilitare la verifica del certificato SSL**:
   ```bash
   python YOURLS-diff_CreatePackage.py --old 1.8.10 --no-verify
   ```
+
+## Opzioni di Deploy
+
+Una volta generato il pacchetto, puoi effettuare il deploy sulla tua installazione YOURLS usando:
+
+- `YOURLS-deploy-OLD-to-NEW.sh`: script Bash con rsync e ssh (per utenti Unix/Linux)
+- `YOURLS-update-OLD-to-NEW.winscp.txt`: script batch per WinSCP (Windows, con `--winscp`)
+- **Upload manuale via FTP**: Estrai il contenuto del file ZIP e caricalo manualmente utilizzando qualsiasi client FTP/SFTP (es: FileZilla, Cyberduck, WinSCP, Transmit).
+
+Ogni metodo/script ti consente di:
+- Caricare i file modificati o aggiunti (in modalità standard)
+- Rimuovere i file non più presenti nella nuova versione (solo con script automatici)
 
 ## Struttura del repository
 
 ```text
 ├── YOURLS-diff_CreatePackage.py   # Script Python principale
 ├── requirements.txt               # Dipendenze Python
-├── LICENSE                        # La licenza utilizzata per questo repository
-├── README.md                      # Questa documentazione, in inglese
-└── README_IT.md                   # Questa documentazione
+├── LICENSE                        # Licenza del progetto
+├── README.md                      # Documentazione in inglese
+└── README_IT.md                   # Documentazione in italiano
 ```
 
 ## Contribuire
 
-Pull request e segnalazioni di issue sono benvenute! Per favore apri una nuova issue per bug o feature request.
+Sono ben accetti Pull Request e segnalazioni di bug! Apri una issue per segnalazioni o proposte di nuove funzionalità.
