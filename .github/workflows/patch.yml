@@ -74,27 +74,35 @@ jobs:
         env:
           PYTHONUNBUFFERED: '1'
 
-      # Check for files (DEBUG)
       - name: Debug final file list
         run: ls -l
 
-      # Determines which files to load as artifacts, and shows the value
       - name: Determine which artifacts to upload
         id: build_artifacts
         run: |
           OLD=${{ needs.check.outputs.old }}
           NEW=${{ needs.check.outputs.new }}
-          ARTIFACTS="YOURLS-update-$OLD-to-$NEW.zip YOURLS-update-$OLD-to-$NEW.txt"
-          if [ -f "YOURLS-update-$OLD-to-$NEW.removed.txt" ]; then
-            ARTIFACTS="$ARTIFACTS YOURLS-update-$OLD-to-$NEW.removed.txt"
-          fi
-          echo "Artifact files: $ARTIFACTS"
-          echo "artifact_files=$ARTIFACTS" >> $GITHUB_OUTPUT
+          FILES="YOURLS-update-$OLD-to-$NEW.zip,YOURLS-update-$OLD-to-$NEW.txt"
 
-      # Verify that all files exist before attempting to upload
+          if [ -f "YOURLS-update-$OLD-to-$NEW.summary.txt" ]; then
+            FILES="$FILES,YOURLS-update-$OLD-to-$NEW.summary.txt"
+          fi
+
+          if [ -f "YOURLS-update-$OLD-to-$NEW.removed.txt" ]; then
+            FILES="$FILES,YOURLS-update-$OLD-to-$NEW.removed.txt"
+          fi
+
+          if [ -f "YOURLS-deploy-$OLD-to-$NEW.sh" ]; then
+            FILES="$FILES,YOURLS-deploy-$OLD-to-$NEW.sh"
+          fi
+
+          echo "artifact_files=$FILES" >> "$GITHUB_OUTPUT"
+          echo "Artifact files: $FILES"
+
       - name: Check artifact files exist
         run: |
-          for f in ${{ steps.build_artifacts.outputs.artifact_files }}; do
+          IFS=',' read -ra files <<< "${{ steps.build_artifacts.outputs.artifact_files }}"
+          for f in "${files[@]}"; do
             if [ ! -f "$f" ]; then
               echo "File missing: $f"
               exit 1
