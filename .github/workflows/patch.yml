@@ -75,7 +75,7 @@ jobs:
           PYTHONUNBUFFERED: '1'
 
       # Check for files (DEBUG)
-      - name: Debug: lista file finali
+      - name: Debug final file list
         run: ls -l
 
       # Determines which files to load as artifacts, and shows the value
