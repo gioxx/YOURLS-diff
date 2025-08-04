@@ -90,6 +90,8 @@ jobs:
 
           if [ -f "YOURLS-update-$OLD-to-$NEW.removed.txt" ]; then
             FILES="$FILES,YOURLS-update-$OLD-to-$NEW.removed.txt"
+          else
+            echo "No removed file list generated: no files were removed between $OLD and $NEW."
           fi
 
           if [ -f "YOURLS-deploy-$OLD-to-$NEW.sh" ]; then
@@ -97,7 +99,7 @@ jobs:
           fi
 
           echo "artifact_files=$FILES" >> "$GITHUB_OUTPUT"
-          echo "Artifact files: $FILES"
+          echo "Artifact files list prepared: $FILES"
 
       - name: Check artifact files exist
         run: |
