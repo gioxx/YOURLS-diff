@@ -393,6 +393,8 @@ def main():
                     for full in sorted(removed):
                         rel = os.path.relpath(full, old_dir)
                         rb.write(rel + "\n")
+                else:
+                    rb.write("\nNo files were removed between the two versions.\n")
 
             print(f"→ Release summary saved to {release_body_path}")
 
