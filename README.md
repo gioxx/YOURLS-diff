@@ -22,11 +22,7 @@ If you want to take advantage of the patches that are automatically created by t
 ## Requirements
 
 - Python **3.6+**  
-- Python libraries listed in `requirements.txt`:
-  ```txt
-  requests>=2.20.0
-  urllib3>=1.25.0
-  ```
+- Python libraries listed in `requirements.txt`
 
 ## Installation
 
