@@ -22,11 +22,7 @@ Se vuoi approfittare delle patch create automaticamente da questo script e da qu
 ## Requisiti
 
 - Python **3.6+**  
-- Librerie Python indicate in `requirements.txt`:
-  ```txt
-  requests>=2.20.0
-  urllib3>=1.25.0
-  ```
+- Librerie Python indicate in `requirements.txt`
 
 ## Installazione
 
