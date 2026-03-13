@@ -12,8 +12,8 @@ jobs:
     permissions:
       contents: read
     outputs:
-      old:   ${{ steps.check.outputs.old }}
-      new:   ${{ steps.check.outputs.new }}
+      old: ${{ steps.check.outputs.old }}
+      new: ${{ steps.check.outputs.new }}
       proceed: ${{ steps.check.outputs.proceed }}
     steps:
       - name: Determine upstream tags & whether to proceed
@@ -26,9 +26,11 @@ jobs:
               repo: 'YOURLS',
               per_page: 2
             });
+
             if (ups.data.length < 2) {
-              throw new Error("Upstream YOURLS has fewer than 2 releases");
+              throw new Error('Upstream YOURLS has fewer than 2 releases');
             }
+
             const newTag = ups.data[0].tag_name;
             const oldTag = ups.data[1].tag_name;
 
@@ -40,7 +42,11 @@ jobs:
                 tag: newTag
               });
             } catch (e) {
-              if (e.status === 404) exists = false;
+              if (e.status === 404) {
+                exists = false;
+              } else {
+                throw e;
+              }
             }
 
             core.setOutput('new', newTag);
@@ -50,29 +56,31 @@ jobs:
   create_patch:
     name: Generate & publish patch
     needs: check
-    permissions:
-      contents: write
     if: needs.check.outputs.proceed == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
           python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Generate patch and manifest
-        run: |
-          OLD=${{ needs.check.outputs.old }}
-          NEW=${{ needs.check.outputs.new }}
-          python YOURLS-diff_CreatePackage.py --old "$OLD" --new "$NEW" --summary
         env:
           PYTHONUNBUFFERED: '1'
+        run: |
+          OLD="${{ needs.check.outputs.old }}"
+          NEW="${{ needs.check.outputs.new }}"
+          python YOURLS-diff_CreatePackage.py --old "$OLD" --new "$NEW" --summary
 
       - name: Debug final file list
         run: ls -l
@@ -80,8 +88,8 @@ jobs:
       - name: Determine which artifacts to upload
         id: build_artifacts
         run: |
-          OLD=${{ needs.check.outputs.old }}
-          NEW=${{ needs.check.outputs.new }}
+          OLD="${{ needs.check.outputs.old }}"
+          NEW="${{ needs.check.outputs.new }}"
           FILES="YOURLS-update-$OLD-to-$NEW.zip,YOURLS-update-$OLD-to-$NEW.txt"
 
           if [ -f "YOURLS-update-$OLD-to-$NEW.summary.txt" ]; then
@@ -111,7 +119,7 @@ jobs:
             fi
           done
 
-      - name: Create Release & Upload Patch
+      - name: Create release and upload patch
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ needs.check.outputs.new }}
@@ -122,3 +130,16 @@ jobs:
           artifacts: ${{ steps.build_artifacts.outputs.artifact_files }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  keepalive:
+    name: Keep workflow alive
+    needs:
+      - check
+      - create_patch
+    if: ${{ always() && github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Keep scheduled workflow alive
+        uses: liskin/gh-workflow-keepalive@v1
