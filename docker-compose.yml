@@ -1,0 +1,11 @@
+services:
+  yourls-diff:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      YOURLS_DIFF_DATA_DIR: /data
+      YOURLS_DIFF_CACHE_DIR: /data/cache
+      YOURLS_DIFF_OUTPUT_DIR: /data/outputs
+    volumes:
+      - ./data:/data

@@ -4,7 +4,7 @@
 
 ![Patch Build](https://github.com/gioxx/YOURLS-diff/actions/workflows/patch.yml/badge.svg)
 
-**YOURLS Diff** is a Python script that simplifies updating a YOURLS installation via FTP by creating a ZIP package containing only the new or modified files between two release tags.
+**YOURLS Diff** is a Python tool that simplifies updating a YOURLS installation via FTP by creating a ZIP package containing only the new or modified files between two release tags.
 
 If you want to take advantage of the patches that are automatically created by this script and this repository (via [this GitHub Action](.github/workflows/patch.yml)), you can take a look at [Releases](https://github.com/gioxx/YOURLS-diff/releases). The most recent update package will always be available by pointing to the [Latest tag](https://github.com/gioxx/YOURLS-diff/releases/latest). The script runs every day at midnight.
 
@@ -16,6 +16,8 @@ If you want to take advantage of the patches that are automatically created by t
 - Produces an external manifest file (`.txt`) listing the changed files.  
 - Generates a `.removed.txt` file if any files were deleted.  
 - Creates a Bash deployment script (`.sh`) that allows you to update your YOURLS instance via rsync and SSH.  
+- Reuses cached YOURLS release ZIPs and extracted archives across comparisons.  
+- Includes a lightweight web UI for selecting two releases and generating the same artifacts from a browser.  
 - Supports SSL certificate verification with an option to disable it.  
 - (Optional) Generates a WinSCP-compatible script (`.winscp.txt`) for Windows users to download and delete removed files via SFTP.
 
@@ -44,6 +46,26 @@ If you want to take advantage of the patches that are automatically created by t
    ```bash
    pip install -r requirements.txt
    ```
+
+## Web UI
+
+You can also run the browser interface, which uses the same comparison engine as the CLI and stores downloaded release ZIPs in a local cache.
+
+```bash
+python -m web.yourls_diff_web
+```
+
+The app listens on `http://127.0.0.1:8000` by default and stores outputs under `data/` unless you override the environment variables.
+
+## Docker
+
+The web UI is also available as a containerized service.
+
+```bash
+docker compose up --build
+```
+
+Mounting `./data:/data` keeps the cache and generated artifacts across restarts.
 
 ## Usage
 
@@ -104,8 +126,13 @@ Each script or method will:
 ## Repository Structure
 
 ```text
-├── YOURLS-diff_CreatePackage.py   # Main Python script
+├── YOURLS-diff_CreatePackage.py   # CLI entry point
+├── web/
+│   ├── yourls_diff_web_backend.py # Shared compare/download backend for the web UI
+│   └── yourls_diff_web.py         # Browser UI entry point
 ├── requirements.txt               # Python dependencies
+├── Dockerfile                     # Container image definition
+├── docker-compose.yml             # Local container runtime
 ├── LICENSE                        # License used for this repository
 ├── README.md                      # This documentation
 └── README_IT.md                   # Italian documentation

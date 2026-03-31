@@ -1,2 +1,4 @@
 /venv
 /removed_backup
+/data
+.DS_Store
