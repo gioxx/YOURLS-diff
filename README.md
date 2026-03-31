@@ -21,8 +21,9 @@ If you want to take advantage of the patches that are automatically created by t
 
 ## Requirements
 
-- Python **3.6+**  
+- Python **3.10+**  
 - Python libraries listed in `requirements.txt`
+- Tested with Python 3.12.2
 
 ## Installation
 

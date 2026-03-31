@@ -21,8 +21,9 @@ Se vuoi approfittare delle patch create automaticamente da questo script e da qu
 
 ## Requisiti
 
-- Python **3.6+**  
+- Python **3.10+**  
 - Librerie Python indicate in `requirements.txt`
+- Testato con Python 3.12.2
 
 ## Installazione
 
