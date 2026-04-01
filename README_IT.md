@@ -4,7 +4,7 @@
 
 ![Patch Build](https://github.com/gioxx/YOURLS-diff/actions/workflows/patch.yml/badge.svg)
 
-**YOURLS Diff** è uno script Python che semplifica l'aggiornamento di un'installazione YOURLS via FTP creando un archivio ZIP contenente solo i file nuovi o modificati tra due tag di rilascio.
+**YOURLS Diff** è uno strumento Python che semplifica l'aggiornamento di un'installazione YOURLS via FTP creando un archivio ZIP contenente solo i file nuovi o modificati tra due tag di rilascio.
 
 Se vuoi approfittare delle patch create automaticamente da questo script e da questo repository (tramite [questa GitHub Action](.github/workflows/patch.yml)), puoi consultare la sezione [Releases](https://github.com/gioxx/YOURLS-diff/releases). Il pacchetto più recente sarà sempre disponibile tramite il [Latest tag](https://github.com/gioxx/YOURLS-diff/releases/latest). Lo script viene eseguito ogni giorno a mezzanotte.
 
@@ -16,6 +16,8 @@ Se vuoi approfittare delle patch create automaticamente da questo script e da qu
 - Produce un file manifest esterno (`.txt`) con l'elenco dei file modificati.  
 - Genera un file `.removed.txt` se sono stati eliminati file nella nuova versione.  
 - Crea uno script di deploy Bash (`.sh`) per aggiornare l'istanza YOURLS tramite rsync e SSH.  
+- Riusa gli ZIP di rilascio YOURLS e gli archivi estratti già presenti in cache tra confronti diversi.  
+- Include una web UI sperimentale ma pienamente usabile per scegliere due release e generare gli stessi artefatti dal browser, soprattutto se eseguita via Docker.  
 - Supporta la verifica del certificato SSL con possibilità di disabilitarla.  
 - (Opzionale) Genera uno script compatibile con WinSCP (`.winscp.txt`) per utenti Windows che vogliono scaricare ed eliminare file via SFTP.
 
@@ -44,6 +46,30 @@ Se vuoi approfittare delle patch create automaticamente da questo script e da qu
    ```bash
    pip install -r requirements.txt
    ```
+
+## Web UI
+
+Puoi anche avviare l'interfaccia web, che usa lo stesso motore della CLI e salva gli ZIP di release scaricati in una cache locale.
+
+La web UI va considerata come un esperimento: è utilizzabile senza problemi e fa esattamente quello che deve fare, ma potrebbe non ricevere grosse evoluzioni future.
+
+```bash
+python -m web.yourls_diff_web
+```
+
+L'app ascolta su `http://127.0.0.1:8000` per default e scrive gli output in `data/`, salvo override delle variabili d'ambiente.
+
+## Docker
+
+Il modo consigliato per usare la web UI oggi è via Docker.
+
+```bash
+docker compose up --build
+```
+
+Il mount `./data:/data` mantiene cache e artefatti generati anche dopo il riavvio del container.
+
+Questa è la configurazione più pratica per la web UI attuale ed è quella che ci si aspetta di continuare a supportare.
 
 ## Utilizzo
 
@@ -101,8 +127,13 @@ Ogni metodo/script ti consente di:
 ## Struttura del repository
 
 ```text
-├── YOURLS-diff_CreatePackage.py   # Script Python principale
+├── YOURLS-diff_CreatePackage.py   # Entry point CLI
+├── web/
+│   ├── yourls_diff_web_backend.py # Backend condiviso per download/confronto della web UI
+│   └── yourls_diff_web.py         # Entry point dell'interfaccia web
 ├── requirements.txt               # Dipendenze Python
+├── Dockerfile                     # Definizione immagine container
+├── docker-compose.yml             # Avvio locale del container
 ├── LICENSE                        # Licenza del progetto
 ├── README.md                      # Documentazione in inglese
 └── README_IT.md                   # Documentazione in italiano
