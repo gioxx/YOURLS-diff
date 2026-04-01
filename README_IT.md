@@ -17,7 +17,7 @@ Se vuoi approfittare delle patch create automaticamente da questo script e da qu
 - Genera un file `.removed.txt` se sono stati eliminati file nella nuova versione.  
 - Crea uno script di deploy Bash (`.sh`) per aggiornare l'istanza YOURLS tramite rsync e SSH.  
 - Riusa gli ZIP di rilascio YOURLS e gli archivi estratti già presenti in cache tra confronti diversi.  
-- Include una web UI leggera per scegliere due release e generare gli stessi artefatti dal browser.  
+- Include una web UI sperimentale ma pienamente usabile per scegliere due release e generare gli stessi artefatti dal browser, soprattutto se eseguita via Docker.  
 - Supporta la verifica del certificato SSL con possibilità di disabilitarla.  
 - (Opzionale) Genera uno script compatibile con WinSCP (`.winscp.txt`) per utenti Windows che vogliono scaricare ed eliminare file via SFTP.
 
@@ -51,6 +51,8 @@ Se vuoi approfittare delle patch create automaticamente da questo script e da qu
 
 Puoi anche avviare l'interfaccia web, che usa lo stesso motore della CLI e salva gli ZIP di release scaricati in una cache locale.
 
+La web UI va considerata come un esperimento: è utilizzabile senza problemi e fa esattamente quello che deve fare, ma potrebbe non ricevere grosse evoluzioni future.
+
 ```bash
 python -m web.yourls_diff_web
 ```
@@ -59,13 +61,15 @@ L'app ascolta su `http://127.0.0.1:8000` per default e scrive gli output in `dat
 
 ## Docker
 
-La web UI è disponibile anche come servizio containerizzato.
+Il modo consigliato per usare la web UI oggi è via Docker.
 
 ```bash
 docker compose up --build
 ```
 
 Il mount `./data:/data` mantiene cache e artefatti generati anche dopo il riavvio del container.
+
+Questa è la configurazione più pratica per la web UI attuale ed è quella che ci si aspetta di continuare a supportare.
 
 ## Utilizzo
 

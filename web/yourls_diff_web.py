@@ -46,12 +46,15 @@ def _download_link(path):
     return f"/download/{quote(rel_dir, safe='')}/{quote(rel_name, safe='')}"
 
 
-def _view_link(path):
+def _view_link(path, return_to=None):
     if not path:
         return None
     rel_dir = os.path.relpath(os.path.dirname(path), OUTPUT_DIR)
     rel_name = os.path.basename(path)
-    return f"/view/{quote(rel_dir, safe='')}/{quote(rel_name, safe='')}"
+    url = f"/view/{quote(rel_dir, safe='')}/{quote(rel_name, safe='')}"
+    if return_to:
+        url += f"?return_to={quote(return_to, safe='')}"
+    return url
 
 
 def _is_viewable_text(path):
@@ -168,6 +171,7 @@ def _render_layout(content="", title="YOURLS-diff web", releases=None, message=N
       --warn: #d97706;
     }}
     * {{ box-sizing: border-box; }}
+    html {{ scroll-behavior: smooth; }}
     body {{
       margin: 0;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -275,6 +279,7 @@ def _render_layout(content="", title="YOURLS-diff web", releases=None, message=N
       gap: 12px;
       align-items: center;
       margin-top: 22px;
+      flex-wrap: wrap;
     }}
     button {{
       appearance: none;
@@ -410,12 +415,37 @@ def _render_layout(content="", title="YOURLS-diff web", releases=None, message=N
       border: 1px solid var(--border);
       background: rgba(255,255,255,.03);
     }}
+    .summary-head {{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }}
+    .summary-icon {{
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      color: var(--accent);
+      flex: 0 0 auto;
+    }}
+    .summary-icon svg {{
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }}
     .summary-label {{
       color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .08em;
-      margin-bottom: 6px;
     }}
     .summary-value {{
       font-size: 18px;
@@ -569,10 +599,26 @@ def _render_layout(content="", title="YOURLS-diff web", releases=None, message=N
       display: inline-block;
       color: var(--accent);
     }}
+    .scroll-top {{
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(14px);
+      transition: opacity .18s ease, transform .18s ease;
+    }}
+    .scroll-top.visible {{
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }}
     @media (max-width: 860px) {{
       .grid, .form-grid {{ grid-template-columns: 1fr; }}
       .meta {{ text-align: left; }}
       .topbar {{ flex-direction: column; }}
+      .mini-stats.overview {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .summary-grid {{ grid-template-columns: 1fr; }}
       .result-summary {{ grid-template-columns: 1fr; }}
       .artifact-list {{ grid-template-columns: 1fr; }}
@@ -610,46 +656,49 @@ def _render_layout(content="", title="YOURLS-diff web", releases=None, message=N
             <button type="submit">Generate</button>
             <div class="secondary">Summary, removed-file list, and WinSCP script are generated automatically.</div>
           </div>
+          <div class="mini-stats overview">
+            <div class="mini-stat">
+              <span class="label">Patch sets</span>
+              <div class="value">{output_stats["patch_sets"]}</div>
+            </div>
+            <div class="mini-stat">
+              <span class="label">Stored files</span>
+              <div class="value">{output_stats["files"]}</div>
+            </div>
+            <div class="mini-stat">
+              <span class="label">Viewable</span>
+              <div class="value">{output_stats["viewable"]}</div>
+            </div>
+            <div class="mini-stat">
+              <span class="label">ZIP downloads</span>
+              <div class="value">{output_stats["downloadable"]}</div>
+            </div>
+            <div class="mini-stat">
+              <span class="label">Persisted</span>
+              <div class="value">{'yes' if (persistent_cache and persistent_outputs) else 'no'}</div>
+            </div>
+          </div>
         </form>
       </div>
       <div class="card">
         <h2>How it works</h2>
-        <div class="mini-stats overview">
-          <div class="mini-stat">
-            <span class="label">Patch sets</span>
-            <div class="value">{output_stats["patch_sets"]}</div>
-          </div>
-          <div class="mini-stat">
-            <span class="label">Stored files</span>
-            <div class="value">{output_stats["files"]}</div>
-          </div>
-          <div class="mini-stat">
-            <span class="label">Viewable</span>
-            <div class="value">{output_stats["viewable"]}</div>
-          </div>
-          <div class="mini-stat">
-            <span class="label">ZIP downloads</span>
-            <div class="value">{output_stats["downloadable"]}</div>
-          </div>
-          <div class="mini-stat">
-            <span class="label">Persisted</span>
-            <div class="value">{'yes' if (persistent_cache and persistent_outputs) else 'no'}</div>
-          </div>
-        </div>
         <ul class="how-points">
           <li class="how-point"><span class="how-marker" aria-hidden="true"></span><div class="how-copy"><strong>Output model</strong><span>Each release pair maps to one output folder, so repeated requests reuse the same generated artifacts instead of creating duplicates.</span></div></li>
           <li class="how-point"><span class="how-marker" aria-hidden="true"></span><div class="how-copy"><strong>Cache layer</strong><span>Release ZIPs are stored under <span class="mono">{_escape(CACHE_DIR)}</span> and reused across runs.</span></div></li>
           <li class="how-point"><span class="how-marker" aria-hidden="true"></span><div class="how-copy"><strong>File access</strong><span>Text outputs can be opened in-browser, while ZIP files stay available for download.</span></div></li>
+          <li class="how-point"><span class="how-marker" aria-hidden="true"></span><div class="how-copy"><strong>Project origin</strong><span>This interface is the web edition of the YOURLS-diff project and depends on the underlying repository and its patch-generation logic.</span></div></li>
         </ul>
       </div>
     </div>
     {content}
     {persist_hint}
   </div>
+  <button type="button" class="button scroll-top" data-scroll-top>Go to top</button>
   <script>
     (() => {{
       const oldSelect = document.querySelector("[data-old-select]");
       const newSelect = document.querySelector("[data-new-select]");
+      const topButton = document.querySelector("[data-scroll-top]");
       const refreshNewOptions = () => {{
         if (!oldSelect || !newSelect) return;
         const oldIndex = Number(oldSelect.selectedOptions[0]?.dataset.releaseIndex ?? "0");
@@ -674,6 +723,17 @@ def _render_layout(content="", title="YOURLS-diff web", releases=None, message=N
         }});
         refreshNewOptions();
       }}
+      const syncTopButton = () => {{
+        if (!topButton) return;
+        topButton.classList.toggle("visible", window.scrollY > 280);
+      }};
+      if (topButton) {{
+        topButton.addEventListener("click", () => {{
+          window.scrollTo({{ top: 0, behavior: "smooth" }});
+        }});
+        window.addEventListener("scroll", syncTopButton, {{ passive: true }});
+        syncTopButton();
+      }}
     }})();
   </script>
 </body>
@@ -681,6 +741,14 @@ def _render_layout(content="", title="YOURLS-diff web", releases=None, message=N
 
 
 def _render_result(result, releases=None, auto_scroll=False):
+    def summary_icon(kind):
+        icons = {
+            "compared": '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 5h5M9 11h5M9 5l2-2 2 2M7 11l-2 2-2-2"/></svg>',
+            "changed": '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>',
+            "removed": '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg>',
+        }
+        return icons[kind]
+
     def badge_for(title):
         if title == "Patch ZIP":
             return "ZIP", "zip"
@@ -694,7 +762,7 @@ def _render_result(result, releases=None, auto_scroll=False):
             links = []
             if file_path:
                 if _is_viewable_text(file_path):
-                    links.append(f'<a class="button secondary" href="{_escape(_view_link(file_path))}">View</a>')
+                    links.append(f'<a class="button secondary" href="{_escape(_view_link(file_path, return_to=result_url + "#files-section"))}">View</a>')
                 links.append(f'<a class="button" href="{_escape(_download_link(file_path))}">Download</a>')
             link = f'<div class="button-row">{"".join(links)}</div>' if links else ""
             badge_label, badge_class = badge_for(title)
@@ -709,6 +777,8 @@ def _render_result(result, releases=None, auto_scroll=False):
                 </div>
                 '''
             )
+
+    result_url = f"/result?old={quote(result.old_tag, safe='')}&new={quote(result.new_tag or '', safe='')}"
 
     add_item("Patch ZIP", result.zip_path, file_path=result.zip_path)
     add_item("Manifest", result.manifest_path, file_path=result.manifest_path)
@@ -731,7 +801,6 @@ def _render_result(result, releases=None, auto_scroll=False):
         </div>
         """
         summary_download = f'<a class="button secondary" href="{_escape(_download_link(result.summary_path))}">Download summary</a>'
-    result_url = f"/result?old={quote(result.old_tag, safe='')}&new={quote(result.new_tag or '', safe='')}"
 
     body = f"""
     <div class="card" id="result-box" style="margin-top: 18px;">
@@ -741,22 +810,23 @@ def _render_result(result, releases=None, auto_scroll=False):
           <p class="lead">{_escape(result.message or "Patch generated.")}</p>
         </div>
         <div class="button-row">
-          <a class="button secondary" href="/">Home</a>
+          <a class="button secondary" href="/">New patch</a>
           <a class="button secondary" href="{_escape(result_url)}">Refresh</a>
           <a class="button secondary" href="{_escape(result_url)}" data-copy-link data-copy-url="{_escape(result_url)}">Copy link</a>
+          <a class="button secondary" href="#files-section">Files</a>
         </div>
       </div>
       <div class="result-summary">
         <div class="summary-card">
-          <div class="summary-label">Compared</div>
+          <div class="summary-head"><span class="summary-icon">{summary_icon("compared")}</span><div class="summary-label">Compared</div></div>
           <div class="summary-value">{_escape(result.old_tag)} → {_escape(result.new_tag)}</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Added / Modified</div>
+          <div class="summary-head"><span class="summary-icon">{summary_icon("changed")}</span><div class="summary-label">Added / Modified</div></div>
           <div class="summary-value">{len(result.changed_files)}</div>
         </div>
         <div class="summary-card">
-          <div class="summary-label">Removed</div>
+          <div class="summary-head"><span class="summary-icon">{summary_icon("removed")}</span><div class="summary-label">Removed</div></div>
           <div class="summary-value">{len(result.removed_files)}</div>
         </div>
       </div>
@@ -764,7 +834,7 @@ def _render_result(result, releases=None, auto_scroll=False):
       <div class="button-row" style="margin: 12px 0 14px;">
         {summary_download}
       </div>
-      <h3 class="available-files-title">Available files</h3>
+      <h3 class="available-files-title" id="files-section">Available files</h3>
       <div class="artifact-list">
         {''.join(artifacts)}
       </div>
@@ -829,9 +899,10 @@ def _serve_file(environ, start_response, base_dir, rel_dir, rel_name, attachment
         return [f.read()]
 
 
-def _render_text_view(target_path, title):
+def _render_text_view(target_path, title, back_url=None):
     with open(target_path, "r", encoding="utf-8", errors="replace") as f:
         content = f.read()
+    safe_back_url = back_url if back_url and back_url.startswith("/") else "/"
     return f"""<!doctype html>
 <html lang="it">
 <head>
@@ -846,6 +917,7 @@ def _render_text_view(target_path, title):
       color: #e9eefb;
       padding: 28px;
     }}
+    html {{ scroll-behavior: smooth; }}
     .wrap {{
       max-width: 1200px;
       margin: 0 auto;
@@ -898,6 +970,19 @@ def _render_text_view(target_path, title):
       color: #e9eefb;
       border: 1px solid rgba(255,255,255,.12);
     }}
+    button.secondary {{
+      appearance: none;
+      -webkit-appearance: none;
+      background: rgba(255,255,255,.08);
+      color: #e9eefb;
+      border: 1px solid rgba(255,255,255,.12);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }}
   </style>
 </head>
 <body>
@@ -905,6 +990,8 @@ def _render_text_view(target_path, title):
     <div class="card">
       <h1>{_escape(title)}</h1>
       <div class="actions">
+        <button type="button" class="secondary" onclick="history.back()">Back</button>
+        <a href="{_escape(safe_back_url)}" class="secondary">Return to result</a>
         <a href="/" class="secondary">Home</a>
         <a href="{_escape(_download_link(target_path))}">Download</a>
       </div>
@@ -1000,8 +1087,10 @@ def app(environ, start_response):
         if len(parts) != 4:
             start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
             return [b"Not found"]
+        params = parse_qs(environ.get("QUERY_STRING", ""), keep_blank_values=True)
         rel_dir = unquote(parts[2])
         rel_name = unquote(parts[3])
+        back_url = (params.get("return_to") or [""])[0].strip()
         target = os.path.realpath(os.path.join(OUTPUT_DIR, rel_dir, rel_name))
         allowed = os.path.realpath(OUTPUT_DIR)
         if not target.startswith(allowed + os.sep) and target != allowed:
@@ -1010,7 +1099,7 @@ def app(environ, start_response):
         if not os.path.isfile(target):
             start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
             return [b"Not found"]
-        body = _render_text_view(target, os.path.basename(target))
+        body = _render_text_view(target, os.path.basename(target), back_url=back_url)
         start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
         return [body.encode("utf-8")]
 
