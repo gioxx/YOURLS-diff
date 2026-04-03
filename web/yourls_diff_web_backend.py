@@ -80,16 +80,6 @@ def _ensure_within_base(path: str, base: str) -> str:
     return target_real
 
 
-def ensure_dir(path: str, base_dir: str | None = None) -> str:
-    base_root = base_dir or os.path.dirname(os.path.realpath(DEFAULT_CACHE_DIR))
-    safe_base = os.path.realpath(os.path.expanduser(base_root))
-    safe_path = os.path.realpath(os.path.expanduser(path))
-    if safe_path != safe_base and not safe_path.startswith(safe_base + os.sep):
-        raise ValueError(f"Refusing to create directory outside allowed base: {path}")
-    os.makedirs(safe_path, exist_ok=True)
-    return safe_path
-
-
 def safe_filename_component(value: str) -> str:
     return safe_name(value)
 
@@ -187,7 +177,8 @@ def fetch_releases(verify_ssl: bool, cache_dir: str | None = None, max_age_secon
             break
         page += 1
 
-    ensure_dir(os.path.dirname(cache_file), base_dir=cache_dir or DEFAULT_CACHE_DIR)
+    safe_cache_dir = _ensure_within_base(os.path.dirname(cache_file), cache_dir or DEFAULT_CACHE_DIR)
+    os.makedirs(safe_cache_dir, exist_ok=True)
     with open(cache_file, "w", encoding="utf-8") as f:
         json.dump(releases, f, indent=2)
     return releases
@@ -195,7 +186,8 @@ def fetch_releases(verify_ssl: bool, cache_dir: str | None = None, max_age_secon
 
 def extract_zip(zip_path: str, extract_to: str) -> str:
     """Extract the ZIP file at zip_path into extract_to and return the main folder path."""
-    safe_extract_to = ensure_dir(extract_to, base_dir=os.path.dirname(extract_to))
+    safe_extract_to = _ensure_within_base(extract_to, os.path.dirname(extract_to))
+    os.makedirs(safe_extract_to, exist_ok=True)
     marker = _ensure_within_base(os.path.join(safe_extract_to, ".complete"), safe_extract_to)
     if os.path.exists(marker):
         subdirs = [d for d in os.listdir(safe_extract_to) if os.path.isdir(os.path.join(safe_extract_to, d))]
@@ -252,8 +244,9 @@ def collect_removed(old_dir: str, new_dir: str) -> list[str]:
 
 def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: str) -> None:
     """Write a manifest file listing the changed files (paths relative to new_root)."""
-    ensure_dir(os.path.dirname(manifest_path), base_dir=os.path.dirname(manifest_path))
-    safe_manifest_path = _ensure_within_base(manifest_path, os.path.dirname(manifest_path))
+    safe_manifest_dir = _ensure_within_base(os.path.dirname(manifest_path), os.path.dirname(manifest_path))
+    os.makedirs(safe_manifest_dir, exist_ok=True)
+    safe_manifest_path = _ensure_within_base(manifest_path, safe_manifest_dir)
     with open(safe_manifest_path, "w", encoding="utf-8") as mf:
         for full in sorted(changed_files):
             rel = os.path.relpath(full, new_root)
@@ -262,8 +255,9 @@ def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: s
 
 
 def write_removed_manifest(removed_files: Iterable[str], old_root: str, removed_manifest_path: str) -> None:
-    ensure_dir(os.path.dirname(removed_manifest_path), base_dir=os.path.dirname(removed_manifest_path))
-    safe_removed_manifest_path = _ensure_within_base(removed_manifest_path, os.path.dirname(removed_manifest_path))
+    safe_removed_manifest_dir = _ensure_within_base(os.path.dirname(removed_manifest_path), os.path.dirname(removed_manifest_path))
+    os.makedirs(safe_removed_manifest_dir, exist_ok=True)
+    safe_removed_manifest_path = _ensure_within_base(removed_manifest_path, safe_removed_manifest_dir)
     with open(safe_removed_manifest_path, "w", encoding="utf-8") as rmf:
         for full in sorted(removed_files):
             rel = os.path.relpath(full, old_root)
@@ -277,7 +271,8 @@ def safe_output_path(path: str, output_dir: str) -> str:
 
 def create_diff_zip(changed_files: Iterable[str], new_root: str, zip_output: str) -> None:
     """Create a ZIP archive containing only the changed files."""
-    ensure_dir(os.path.dirname(zip_output), base_dir=os.path.dirname(zip_output))
+    safe_zip_dir = _ensure_within_base(os.path.dirname(zip_output), os.path.dirname(zip_output))
+    os.makedirs(safe_zip_dir, exist_ok=True)
     print(f"→ Creating package {zip_output}")
     count = 0
     with zipfile.ZipFile(zip_output, "w", compression=zipfile.ZIP_DEFLATED) as z:
@@ -374,7 +369,7 @@ def generate_deploy_script(
     safe_script_filename = _ensure_within_base(script_filename, os.path.dirname(script_filename))
     with open(safe_script_filename, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
-    os.chmod(script_filename, 0o755)
+    os.chmod(safe_script_filename, 0o755)
     print(f"→ Deployment script generated: {script_filename}")
     return script_filename
 
@@ -385,7 +380,8 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
     """
     manifest_path = _ensure_within_base(removed_manifest_path, os.path.dirname(removed_manifest_path))
     script_dir = os.path.dirname(manifest_path)
-    local_backup_dir = ensure_dir(os.path.join(script_dir, "removed_backup"), base_dir=script_dir)
+    local_backup_dir = _ensure_within_base(os.path.join(script_dir, "removed_backup"), script_dir)
+    os.makedirs(local_backup_dir, exist_ok=True)
     script_name = _ensure_within_base(os.path.splitext(manifest_path)[0] + ".winscp.txt", script_dir)
 
     with open(manifest_path, "r", encoding="utf-8") as f:
@@ -401,7 +397,8 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
         for rel_path in files:
             unix_path = rel_path.replace("\\", "/")
             local_path = _ensure_within_base(os.path.join(local_backup_dir, rel_path), local_backup_dir)
-            ensure_dir(os.path.dirname(local_path), base_dir=local_backup_dir)
+            safe_local_dir = _ensure_within_base(os.path.dirname(local_path), local_backup_dir)
+            os.makedirs(safe_local_dir, exist_ok=True)
             wsc.write(f"get \"{unix_path}\" \"{rel_path}\"\n")
 
         for rel_path in files:
@@ -419,8 +416,10 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
 def prepare_release(tag: str, verify_ssl: bool, cache_dir: str | None = None) -> ReleaseSnapshot:
     """Download and extract a release, reusing cached artifacts when present."""
     root_cache = cache_dir or DEFAULT_CACHE_DIR
-    archives_dir = ensure_dir(cache_path("archives", cache_dir=root_cache), base_dir=root_cache)
-    extracted_dir = ensure_dir(cache_path("extracted", cache_dir=root_cache), base_dir=root_cache)
+    archives_dir = _ensure_within_base(cache_path("archives", cache_dir=root_cache), root_cache)
+    os.makedirs(archives_dir, exist_ok=True)
+    extracted_dir = _ensure_within_base(cache_path("extracted", cache_dir=root_cache), root_cache)
+    os.makedirs(extracted_dir, exist_ok=True)
     safe_tag = safe_filename_component(tag)
     archive_path = os.path.join(archives_dir, f"{safe_tag}.zip")
     extract_dir = os.path.join(extracted_dir, safe_tag)
@@ -457,7 +456,8 @@ def run_diff(
     if old_tag == new_tag:
         raise ValueError(f"Old tag '{old_tag}' and new tag '{new_tag}' are identical. Nothing to do.")
 
-    ensure_dir(output_dir, base_dir=output_dir)
+    output_dir = _ensure_within_base(output_dir, output_dir)
+    os.makedirs(output_dir, exist_ok=True)
     paths = artifact_paths(output_dir, old_tag, new_tag, output_name=output_name)
     zip_name = paths["zip_name"]
     manifest_path = paths["manifest_path"]
