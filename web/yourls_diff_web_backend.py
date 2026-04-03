@@ -126,17 +126,13 @@ def cache_path(*parts: str, cache_dir: str | None = None) -> str:
     return os.path.join(base, *parts)
 
 
-def safe_cache_path(path: str, cache_dir: str | None = None) -> str:
-    return _ensure_within_base(path, cache_dir or DEFAULT_CACHE_DIR)
-
-
 def download_zip(tag: str, dest_path: str, verify_ssl: bool) -> str:
     """Download the ZIP archive for the given YOURLS release tag to dest_path."""
     url = ZIP_URL_TEMPLATE.format(tag=tag)
     print(f"→ Downloading {tag} from {url}")
     r = requests.get(url, stream=True, verify=verify_ssl, timeout=(10, 120))
     r.raise_for_status()
-    safe_dest = safe_cache_path(dest_path)
+    safe_dest = _ensure_within_base(dest_path, DEFAULT_CACHE_DIR)
     with open(safe_dest, "wb") as f:
         for chunk in r.iter_content(1024 * 1024):
             if chunk:
@@ -200,17 +196,17 @@ def fetch_releases(verify_ssl: bool, cache_dir: str | None = None, max_age_secon
 def extract_zip(zip_path: str, extract_to: str) -> str:
     """Extract the ZIP file at zip_path into extract_to and return the main folder path."""
     safe_extract_to = ensure_dir(extract_to, base_dir=os.path.dirname(extract_to))
-    marker = safe_cache_path(os.path.join(safe_extract_to, ".complete"), cache_dir=os.path.dirname(safe_extract_to))
+    marker = _ensure_within_base(os.path.join(safe_extract_to, ".complete"), safe_extract_to)
     if os.path.exists(marker):
         subdirs = [d for d in os.listdir(safe_extract_to) if os.path.isdir(os.path.join(safe_extract_to, d))]
-        return safe_cache_path(os.path.join(safe_extract_to, subdirs[0]), cache_dir=safe_extract_to) if len(subdirs) == 1 else safe_extract_to
+        return _ensure_within_base(os.path.join(safe_extract_to, subdirs[0]), safe_extract_to) if len(subdirs) == 1 else safe_extract_to
 
     with zipfile.ZipFile(zip_path, "r") as z:
         z.extractall(safe_extract_to)
     with open(marker, "w", encoding="utf-8") as f:
         f.write(str(time.time()))
     subdirs = [d for d in os.listdir(safe_extract_to) if os.path.isdir(os.path.join(safe_extract_to, d))]
-    return safe_cache_path(os.path.join(safe_extract_to, subdirs[0]), cache_dir=safe_extract_to) if len(subdirs) == 1 else safe_extract_to
+    return _ensure_within_base(os.path.join(safe_extract_to, subdirs[0]), safe_extract_to) if len(subdirs) == 1 else safe_extract_to
 
 
 def count_all_files(base_dir: str) -> int:
@@ -257,7 +253,8 @@ def collect_removed(old_dir: str, new_dir: str) -> list[str]:
 def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: str) -> None:
     """Write a manifest file listing the changed files (paths relative to new_root)."""
     ensure_dir(os.path.dirname(manifest_path), base_dir=os.path.dirname(manifest_path))
-    with open_output_text(manifest_path, os.path.dirname(manifest_path), "w") as mf:
+    safe_manifest_path = _ensure_within_base(manifest_path, os.path.dirname(manifest_path))
+    with open(safe_manifest_path, "w", encoding="utf-8") as mf:
         for full in sorted(changed_files):
             rel = os.path.relpath(full, new_root)
             mf.write(rel + "\n")
@@ -266,7 +263,8 @@ def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: s
 
 def write_removed_manifest(removed_files: Iterable[str], old_root: str, removed_manifest_path: str) -> None:
     ensure_dir(os.path.dirname(removed_manifest_path), base_dir=os.path.dirname(removed_manifest_path))
-    with open_output_text(removed_manifest_path, os.path.dirname(removed_manifest_path), "w") as rmf:
+    safe_removed_manifest_path = _ensure_within_base(removed_manifest_path, os.path.dirname(removed_manifest_path))
+    with open(safe_removed_manifest_path, "w", encoding="utf-8") as rmf:
         for full in sorted(removed_files):
             rel = os.path.relpath(full, old_root)
             rmf.write(rel + "\n")
@@ -275,21 +273,6 @@ def write_removed_manifest(removed_files: Iterable[str], old_root: str, removed_
 
 def safe_output_path(path: str, output_dir: str) -> str:
     return _ensure_within_base(path, output_dir)
-
-
-def open_output_text(path: str, output_dir: str, mode: str):
-    safe_path = safe_output_path(path, output_dir)
-    return open(safe_path, mode, encoding="utf-8")
-
-
-def output_path_exists(path: str, output_dir: str) -> bool:
-    safe_path = safe_output_path(path, output_dir)
-    return os.path.exists(safe_path)
-
-
-def read_output_manifest(path: str, output_dir: str) -> list[str]:
-    with open_output_text(path, output_dir, "r") as f:
-        return [line.strip() for line in f if line.strip()]
 
 
 def create_diff_zip(changed_files: Iterable[str], new_root: str, zip_output: str) -> None:
@@ -388,7 +371,8 @@ def generate_deploy_script(
 
     lines += ["echo \"Deployment completed!\""]
 
-    with open_output_text(script_filename, os.path.dirname(script_filename), "w") as f:
+    safe_script_filename = _ensure_within_base(script_filename, os.path.dirname(script_filename))
+    with open(safe_script_filename, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     os.chmod(script_filename, 0o755)
     print(f"→ Deployment script generated: {script_filename}")
@@ -399,15 +383,15 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
     """
     Generate a WinSCP script to download and delete files listed in the removed manifest.
     """
-    manifest_path = safe_output_path(removed_manifest_path, os.path.dirname(removed_manifest_path))
+    manifest_path = _ensure_within_base(removed_manifest_path, os.path.dirname(removed_manifest_path))
     script_dir = os.path.dirname(manifest_path)
     local_backup_dir = ensure_dir(os.path.join(script_dir, "removed_backup"), base_dir=script_dir)
-    script_name = safe_output_path(os.path.splitext(manifest_path)[0] + ".winscp.txt", script_dir)
+    script_name = _ensure_within_base(os.path.splitext(manifest_path)[0] + ".winscp.txt", script_dir)
 
-    with open_output_text(manifest_path, script_dir, "r") as f:
+    with open(manifest_path, "r", encoding="utf-8") as f:
         files = [line.strip() for line in f if line.strip()]
 
-    with open_output_text(script_name, script_dir, "w") as wsc:
+    with open(script_name, "w", encoding="utf-8") as wsc:
         wsc.write("option batch on\n")
         wsc.write("option confirm off\n")
         wsc.write(f"open sftp://{user}@{host}/\n")
@@ -485,15 +469,30 @@ def run_diff(
     old_release = prepare_release(old_tag, verify_ssl, cache_dir=cache_dir)
     new_release = prepare_release(new_tag, verify_ssl, cache_dir=cache_dir)
 
-    baseline_ready = output_path_exists(paths["zip_path"], output_dir) and output_path_exists(manifest_path, output_dir) and output_path_exists(deploy_path, output_dir)
+    safe_zip_path = _ensure_within_base(paths["zip_path"], output_dir)
+    safe_manifest_path = _ensure_within_base(manifest_path, output_dir)
+    safe_removed_manifest_path = _ensure_within_base(removed_manifest_path, output_dir)
+    safe_summary_path = _ensure_within_base(summary_path, output_dir)
+    safe_deploy_path = _ensure_within_base(deploy_path, output_dir)
+    safe_winscp_path = _ensure_within_base(winscp_path, output_dir)
+
+    baseline_ready = os.path.exists(safe_zip_path) and os.path.exists(safe_manifest_path) and os.path.exists(safe_deploy_path)
     if only_removed:
-        baseline_ready = output_path_exists(removed_manifest_path, output_dir) and output_path_exists(deploy_path, output_dir)
+        baseline_ready = os.path.exists(safe_removed_manifest_path) and os.path.exists(safe_deploy_path)
 
     if baseline_ready:
-        changed = read_output_manifest(manifest_path, output_dir) if not only_removed else []
-        removed = read_output_manifest(removed_manifest_path, output_dir) if output_path_exists(removed_manifest_path, output_dir) else []
+        if not only_removed:
+            with open(safe_manifest_path, "r", encoding="utf-8") as f:
+                changed = [line.strip() for line in f if line.strip()]
+        else:
+            changed = []
+        if os.path.exists(safe_removed_manifest_path):
+            with open(safe_removed_manifest_path, "r", encoding="utf-8") as f:
+                removed = [line.strip() for line in f if line.strip()]
+        else:
+            removed = []
         if only_removed:
-            if winscp and not output_path_exists(winscp_path, output_dir):
+            if winscp and not os.path.exists(safe_winscp_path):
                 winscp_path = generate_winscp_script(
                     removed_manifest_path=removed_manifest_path,
                     remote_base_path=remote_base_path,
@@ -508,15 +507,15 @@ def run_diff(
                 changed_files=[],
                 removed_files=removed,
                 output_dir=output_dir,
-                removed_manifest_path=removed_manifest_path if output_path_exists(removed_manifest_path, output_dir) else None,
-                deploy_script_path=deploy_path if output_path_exists(deploy_path, output_dir) else None,
-                winscp_script_path=winscp_path if output_path_exists(winscp_path, output_dir) else None,
+                removed_manifest_path=removed_manifest_path if os.path.exists(safe_removed_manifest_path) else None,
+                deploy_script_path=deploy_path if os.path.exists(safe_deploy_path) else None,
+                winscp_script_path=winscp_path if os.path.exists(safe_winscp_path) else None,
                 message="Reused existing removed-file artifacts.",
             )
 
-        if summary and not output_path_exists(summary_path, output_dir):
-            removed_files = read_output_manifest(removed_manifest_path, output_dir) if output_path_exists(removed_manifest_path, output_dir) else []
-            with open_output_text(summary_path, output_dir, "w") as rb:
+        if summary and not os.path.exists(safe_summary_path):
+            removed_files = removed
+            with open(safe_summary_path, "w", encoding="utf-8") as rb:
                 rb.write(f"# YOURLS Patch Summary (from {old_tag} version to {new_tag})\n\n")
                 rb.write(f"Number of files in OLD: {count_all_files(old_release.root_dir)}\n")
                 rb.write(f"Number of files in NEW: {count_all_files(new_release.root_dir)}\n")
@@ -540,14 +539,14 @@ def run_diff(
             total_old=count_all_files(old_release.root_dir),
             total_new=count_all_files(new_release.root_dir),
             changed_files=changed,
-            removed_files=read_output_manifest(removed_manifest_path, output_dir) if output_path_exists(removed_manifest_path, output_dir) else [],
+            removed_files=removed,
             output_dir=output_dir,
-            zip_path=paths["zip_path"] if output_path_exists(paths["zip_path"], output_dir) else None,
-            manifest_path=manifest_path if output_path_exists(manifest_path, output_dir) else None,
-            removed_manifest_path=removed_manifest_path if output_path_exists(removed_manifest_path, output_dir) else None,
-            summary_path=summary_path if output_path_exists(summary_path, output_dir) else None,
-            deploy_script_path=deploy_path if output_path_exists(deploy_path, output_dir) else None,
-            winscp_script_path=winscp_path if output_path_exists(winscp_path, output_dir) else None,
+            zip_path=paths["zip_path"] if os.path.exists(safe_zip_path) else None,
+            manifest_path=manifest_path if os.path.exists(safe_manifest_path) else None,
+            removed_manifest_path=removed_manifest_path if os.path.exists(safe_removed_manifest_path) else None,
+            summary_path=summary_path if os.path.exists(safe_summary_path) else None,
+            deploy_script_path=deploy_path if os.path.exists(safe_deploy_path) else None,
+            winscp_script_path=winscp_path if os.path.exists(safe_winscp_path) else None,
             message="Reused existing patch artifacts.",
         )
 
@@ -618,7 +617,8 @@ def run_diff(
     )
 
     if summary:
-        with open_output_text(summary_path, output_dir, "w") as rb:
+        safe_summary_path = _ensure_within_base(summary_path, output_dir)
+        with open(safe_summary_path, "w", encoding="utf-8") as rb:
             rb.write(f"# YOURLS Patch Summary (from {old_tag} version to {new_tag})\n\n")
             rb.write(f"Number of files in OLD: {total_old}\n")
             rb.write(f"Number of files in NEW: {total_new}\n")
