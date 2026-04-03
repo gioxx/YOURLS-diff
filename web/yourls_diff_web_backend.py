@@ -123,17 +123,22 @@ def cache_path(*parts: str, cache_dir: str | None = None) -> str:
     return os.path.join(base, *parts)
 
 
+def safe_cache_path(path: str, cache_dir: str | None = None) -> str:
+    return _ensure_within_base(path, cache_dir or DEFAULT_CACHE_DIR)
+
+
 def download_zip(tag: str, dest_path: str, verify_ssl: bool) -> str:
     """Download the ZIP archive for the given YOURLS release tag to dest_path."""
     url = ZIP_URL_TEMPLATE.format(tag=tag)
     print(f"→ Downloading {tag} from {url}")
     r = requests.get(url, stream=True, verify=verify_ssl, timeout=(10, 120))
     r.raise_for_status()
-    with open(dest_path, "wb") as f:
+    safe_dest = safe_cache_path(dest_path)
+    with open(safe_dest, "wb") as f:
         for chunk in r.iter_content(1024 * 1024):
             if chunk:
                 f.write(chunk)
-    return dest_path
+    return safe_dest
 
 
 def get_latest_tag(verify_ssl: bool) -> str:
@@ -191,18 +196,18 @@ def fetch_releases(verify_ssl: bool, cache_dir: str | None = None, max_age_secon
 
 def extract_zip(zip_path: str, extract_to: str) -> str:
     """Extract the ZIP file at zip_path into extract_to and return the main folder path."""
-    ensure_dir(extract_to, base_dir=os.path.dirname(extract_to))
-    marker = os.path.join(extract_to, ".complete")
+    safe_extract_to = ensure_dir(extract_to, base_dir=os.path.dirname(extract_to))
+    marker = safe_cache_path(os.path.join(safe_extract_to, ".complete"), cache_dir=os.path.dirname(safe_extract_to))
     if os.path.exists(marker):
-        subdirs = [d for d in os.listdir(extract_to) if os.path.isdir(os.path.join(extract_to, d))]
-        return os.path.join(extract_to, subdirs[0]) if len(subdirs) == 1 else extract_to
+        subdirs = [d for d in os.listdir(safe_extract_to) if os.path.isdir(os.path.join(safe_extract_to, d))]
+        return safe_cache_path(os.path.join(safe_extract_to, subdirs[0]), cache_dir=safe_extract_to) if len(subdirs) == 1 else safe_extract_to
 
     with zipfile.ZipFile(zip_path, "r") as z:
-        z.extractall(extract_to)
+        z.extractall(safe_extract_to)
     with open(marker, "w", encoding="utf-8") as f:
         f.write(str(time.time()))
-    subdirs = [d for d in os.listdir(extract_to) if os.path.isdir(os.path.join(extract_to, d))]
-    return os.path.join(extract_to, subdirs[0]) if len(subdirs) == 1 else extract_to
+    subdirs = [d for d in os.listdir(safe_extract_to) if os.path.isdir(os.path.join(safe_extract_to, d))]
+    return safe_cache_path(os.path.join(safe_extract_to, subdirs[0]), cache_dir=safe_extract_to) if len(subdirs) == 1 else safe_extract_to
 
 
 def count_all_files(base_dir: str) -> int:

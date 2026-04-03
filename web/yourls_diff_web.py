@@ -46,6 +46,22 @@ def _safe_header_filename(value):
     return name or "download"
 
 
+def _safe_served_path(base_dir, rel_dir, rel_name):
+    safe_base = os.path.realpath(os.path.expanduser(base_dir))
+    safe_target = os.path.realpath(os.path.join(safe_base, rel_dir, rel_name))
+    if safe_target != safe_base and not safe_target.startswith(safe_base + os.sep):
+        raise ValueError("Forbidden")
+    return safe_target
+
+
+def _open_served_file(base_dir, rel_dir, rel_name, mode, **kwargs):
+    return open(_safe_served_path(base_dir, rel_dir, rel_name), mode, **kwargs)
+
+
+def _open_text_target(path, base_dir):
+    return open(_safe_served_path(base_dir, "", os.path.relpath(path, base_dir)), "r", encoding="utf-8", errors="replace")
+
+
 def _download_link(path):
     if not path:
         return None
@@ -886,9 +902,9 @@ def _render_result(result, releases=None, auto_scroll=False):
 
 
 def _serve_file(environ, start_response, base_dir, rel_dir, rel_name, attachment=True):
-    target = os.path.realpath(os.path.join(base_dir, rel_dir, rel_name))
-    allowed = os.path.realpath(base_dir)
-    if not target.startswith(allowed + os.sep) and target != allowed:
+    try:
+        target = _safe_served_path(base_dir, rel_dir, rel_name)
+    except ValueError:
         start_response("403 Forbidden", [("Content-Type", "text/plain; charset=utf-8")])
         return [b"Forbidden"]
     if not os.path.isfile(target):
@@ -903,12 +919,13 @@ def _serve_file(environ, start_response, base_dir, rel_dir, rel_name, attachment
     disposition = "attachment" if attachment else "inline"
     headers.append(("Content-Disposition", f'{disposition}; filename="{_safe_header_filename(target)}"'))
     start_response("200 OK", headers)
-    with open(target, "rb") as f:
+    rel_target = os.path.relpath(target, base_dir)
+    with _open_served_file(base_dir, "", rel_target, "rb") as f:
         return [f.read()]
 
 
 def _render_text_view(target_path, title, back_url=None):
-    with open(target_path, "r", encoding="utf-8", errors="replace") as f:
+    with _open_text_target(target_path, OUTPUT_DIR) as f:
         content = f.read()
     safe_back_url = back_url if back_url and back_url.startswith("/") else "/"
     return f"""<!doctype html>
