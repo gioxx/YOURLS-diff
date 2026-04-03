@@ -10,6 +10,7 @@ import argparse
 import html
 import mimetypes
 import os
+import sys
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler, make_server
@@ -22,6 +23,7 @@ DATA_DIR = os.environ.get("YOURLS_DIFF_DATA_DIR", os.path.join(os.getcwd(), "dat
 CACHE_DIR = os.environ.get("YOURLS_DIFF_CACHE_DIR", os.path.join(DATA_DIR, "cache"))
 OUTPUT_DIR = os.environ.get("YOURLS_DIFF_OUTPUT_DIR", os.path.join(DATA_DIR, "outputs"))
 DEFAULT_VERIFY_SSL = os.environ.get("YOURLS_DIFF_VERIFY_SSL", "1") not in {"0", "false", "False"}
+GENERIC_ERROR_MESSAGE = "An internal error occurred while processing the request."
 
 
 class ThreadingWSGIServer(ThreadingMixIn, WSGIServer):
@@ -36,6 +38,12 @@ def _read_form(environ):
 
 def _escape(value):
     return html.escape("" if value is None else str(value), quote=True)
+
+
+def _safe_header_filename(value):
+    name = os.path.basename("" if value is None else str(value))
+    name = name.replace("\r", "").replace("\n", "").replace('"', "")
+    return name or "download"
 
 
 def _download_link(path):
@@ -893,7 +901,7 @@ def _serve_file(environ, start_response, base_dir, rel_dir, rel_name, attachment
         ("Content-Length", str(os.path.getsize(target))),
     ]
     disposition = "attachment" if attachment else "inline"
-    headers.append(("Content-Disposition", f'{disposition}; filename="{os.path.basename(target)}"'))
+    headers.append(("Content-Disposition", f'{disposition}; filename="{_safe_header_filename(target)}"'))
     start_response("200 OK", headers)
     with open(target, "rb") as f:
         return [f.read()]
@@ -1010,7 +1018,8 @@ def app(environ, start_response):
     try:
         releases = fetch_releases(DEFAULT_VERIFY_SSL, cache_dir=CACHE_DIR)
     except Exception as exc:
-        error = f"Unable to load release list: {exc}"
+        _log_exception("Failed to load release list", exc)
+        error = "Unable to load release list right now."
 
     if path == "/" and method == "GET":
         body = _render_layout(releases=releases, message=error)
@@ -1042,7 +1051,8 @@ def app(environ, start_response):
             start_response("303 See Other", [("Location", location)])
             return [b""]
         except Exception as exc:
-            body = _render_layout(content=_render_error(str(exc)), releases=releases, message=error)
+            _log_exception("Failed to generate diff", exc)
+            body = _render_layout(content=_render_error(GENERIC_ERROR_MESSAGE), releases=releases, message=error)
             start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
             return [body.encode("utf-8")]
 
@@ -1069,7 +1079,8 @@ def app(environ, start_response):
             start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
             return [body.encode("utf-8")]
         except Exception as exc:
-            body = _render_layout(content=_render_error(str(exc)), releases=releases, message=error)
+            _log_exception("Failed to load result", exc)
+            body = _render_layout(content=_render_error(GENERIC_ERROR_MESSAGE), releases=releases, message=error)
             start_response("200 OK", [("Content-Type", "text/html; charset=utf-8")])
             return [body.encode("utf-8")]
 
@@ -1109,6 +1120,10 @@ def app(environ, start_response):
 
 def _render_error(message):
     return f'<div class="notice" style="border-color: rgba(217,119,6,.5);">{_escape(message)}</div>'
+
+
+def _log_exception(context, exc):
+    print(f"{context}: {exc}", file=sys.stderr)
 
 
 def main(argv=None):
