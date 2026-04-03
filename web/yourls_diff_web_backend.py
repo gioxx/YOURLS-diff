@@ -82,7 +82,10 @@ def _ensure_within_base(path: str, base: str) -> str:
 
 def ensure_dir(path: str, base_dir: str | None = None) -> str:
     base_root = base_dir or os.path.dirname(os.path.realpath(DEFAULT_CACHE_DIR))
-    safe_path = _ensure_within_base(path, base_root)
+    safe_base = os.path.realpath(os.path.expanduser(base_root))
+    safe_path = os.path.realpath(os.path.expanduser(path))
+    if safe_path != safe_base and not safe_path.startswith(safe_base + os.sep):
+        raise ValueError(f"Refusing to create directory outside allowed base: {path}")
     os.makedirs(safe_path, exist_ok=True)
     return safe_path
 
@@ -254,7 +257,7 @@ def collect_removed(old_dir: str, new_dir: str) -> list[str]:
 def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: str) -> None:
     """Write a manifest file listing the changed files (paths relative to new_root)."""
     ensure_dir(os.path.dirname(manifest_path), base_dir=os.path.dirname(manifest_path))
-    with open(manifest_path, "w", encoding="utf-8") as mf:
+    with open_output_text(manifest_path, os.path.dirname(manifest_path), "w") as mf:
         for full in sorted(changed_files):
             rel = os.path.relpath(full, new_root)
             mf.write(rel + "\n")
@@ -263,7 +266,7 @@ def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: s
 
 def write_removed_manifest(removed_files: Iterable[str], old_root: str, removed_manifest_path: str) -> None:
     ensure_dir(os.path.dirname(removed_manifest_path), base_dir=os.path.dirname(removed_manifest_path))
-    with open(removed_manifest_path, "w", encoding="utf-8") as rmf:
+    with open_output_text(removed_manifest_path, os.path.dirname(removed_manifest_path), "w") as rmf:
         for full in sorted(removed_files):
             rel = os.path.relpath(full, old_root)
             rmf.write(rel + "\n")
@@ -275,11 +278,13 @@ def safe_output_path(path: str, output_dir: str) -> str:
 
 
 def open_output_text(path: str, output_dir: str, mode: str):
-    return open(safe_output_path(path, output_dir), mode, encoding="utf-8")
+    safe_path = safe_output_path(path, output_dir)
+    return open(safe_path, mode, encoding="utf-8")
 
 
 def output_path_exists(path: str, output_dir: str) -> bool:
-    return os.path.exists(safe_output_path(path, output_dir))
+    safe_path = safe_output_path(path, output_dir)
+    return os.path.exists(safe_path)
 
 
 def read_output_manifest(path: str, output_dir: str) -> list[str]:
@@ -383,7 +388,7 @@ def generate_deploy_script(
 
     lines += ["echo \"Deployment completed!\""]
 
-    with open(script_filename, "w", encoding="utf-8") as f:
+    with open_output_text(script_filename, os.path.dirname(script_filename), "w") as f:
         f.write("\n".join(lines))
     os.chmod(script_filename, 0o755)
     print(f"→ Deployment script generated: {script_filename}")
@@ -511,8 +516,7 @@ def run_diff(
 
         if summary and not output_path_exists(summary_path, output_dir):
             removed_files = read_output_manifest(removed_manifest_path, output_dir) if output_path_exists(removed_manifest_path, output_dir) else []
-            summary_path = safe_output_path(summary_path, output_dir)
-            with open(summary_path, "w", encoding="utf-8") as rb:
+            with open_output_text(summary_path, output_dir, "w") as rb:
                 rb.write(f"# YOURLS Patch Summary (from {old_tag} version to {new_tag})\n\n")
                 rb.write(f"Number of files in OLD: {count_all_files(old_release.root_dir)}\n")
                 rb.write(f"Number of files in NEW: {count_all_files(new_release.root_dir)}\n")
@@ -614,8 +618,7 @@ def run_diff(
     )
 
     if summary:
-        summary_path = safe_output_path(summary_path, output_dir)
-        with open(summary_path, "w", encoding="utf-8") as rb:
+        with open_output_text(summary_path, output_dir, "w") as rb:
             rb.write(f"# YOURLS Patch Summary (from {old_tag} version to {new_tag})\n\n")
             rb.write(f"Number of files in OLD: {total_old}\n")
             rb.write(f"Number of files in NEW: {total_new}\n")

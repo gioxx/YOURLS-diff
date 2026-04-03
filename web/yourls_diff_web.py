@@ -1119,9 +1119,9 @@ def app(environ, start_response):
         rel_dir = unquote(parts[2])
         rel_name = unquote(parts[3])
         back_url = (params.get("return_to") or [""])[0].strip()
-        target = os.path.realpath(os.path.join(OUTPUT_DIR, rel_dir, rel_name))
-        allowed = os.path.realpath(OUTPUT_DIR)
-        if not target.startswith(allowed + os.sep) and target != allowed:
+        try:
+            target = _safe_served_path(OUTPUT_DIR, rel_dir, rel_name)
+        except ValueError:
             start_response("403 Forbidden", [("Content-Type", "text/plain; charset=utf-8")])
             return [b"Forbidden"]
         if not os.path.isfile(target):
