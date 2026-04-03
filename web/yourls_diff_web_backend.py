@@ -81,10 +81,10 @@ def _ensure_within_base(path: str, base: str) -> str:
 
 
 def ensure_dir(path: str, base_dir: str | None = None) -> str:
-    if base_dir is not None:
-        path = _ensure_within_base(path, base_dir)
-    os.makedirs(path, exist_ok=True)
-    return path
+    base_root = base_dir or os.path.dirname(os.path.realpath(DEFAULT_CACHE_DIR))
+    safe_path = _ensure_within_base(path, base_root)
+    os.makedirs(safe_path, exist_ok=True)
+    return safe_path
 
 
 def safe_filename_component(value: str) -> str:
@@ -265,6 +265,18 @@ def write_removed_manifest(removed_files: Iterable[str], old_root: str, removed_
     print(f"→ Removed files found, list saved to {removed_manifest_path}")
 
 
+def safe_output_path(path: str, output_dir: str) -> str:
+    return _ensure_within_base(path, output_dir)
+
+
+def output_path_exists(path: str, output_dir: str) -> bool:
+    return os.path.exists(safe_output_path(path, output_dir))
+
+
+def read_output_manifest(path: str, output_dir: str) -> list[str]:
+    return read_manifest(safe_output_path(path, output_dir))
+
+
 def create_diff_zip(changed_files: Iterable[str], new_root: str, zip_output: str) -> None:
     """Create a ZIP archive containing only the changed files."""
     ensure_dir(os.path.dirname(zip_output), base_dir=os.path.dirname(zip_output))
@@ -372,12 +384,12 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
     """
     Generate a WinSCP script to download and delete files listed in the removed manifest.
     """
-    script_dir = os.path.dirname(os.path.abspath(removed_manifest_path))
-    local_backup_dir = os.path.join(script_dir, "removed_backup")
-    os.makedirs(local_backup_dir, exist_ok=True)
-    script_name = os.path.splitext(removed_manifest_path)[0] + ".winscp.txt"
+    manifest_path = _ensure_within_base(removed_manifest_path, os.path.dirname(removed_manifest_path))
+    script_dir = os.path.dirname(manifest_path)
+    local_backup_dir = ensure_dir(os.path.join(script_dir, "removed_backup"), base_dir=script_dir)
+    script_name = _ensure_within_base(os.path.splitext(manifest_path)[0] + ".winscp.txt", script_dir)
 
-    with open(removed_manifest_path, "r", encoding="utf-8") as f:
+    with open(manifest_path, "r", encoding="utf-8") as f:
         files = [line.strip() for line in f if line.strip()]
 
     with open(script_name, "w", encoding="utf-8") as wsc:
@@ -389,8 +401,8 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
 
         for rel_path in files:
             unix_path = rel_path.replace("\\", "/")
-            local_path = os.path.join(local_backup_dir, rel_path)
-            os.makedirs(os.path.dirname(local_path), exist_ok=True)
+            local_path = _ensure_within_base(os.path.join(local_backup_dir, rel_path), local_backup_dir)
+            ensure_dir(os.path.dirname(local_path), base_dir=local_backup_dir)
             wsc.write(f"get \"{unix_path}\" \"{rel_path}\"\n")
 
         for rel_path in files:
@@ -458,15 +470,15 @@ def run_diff(
     old_release = prepare_release(old_tag, verify_ssl, cache_dir=cache_dir)
     new_release = prepare_release(new_tag, verify_ssl, cache_dir=cache_dir)
 
-    baseline_ready = os.path.exists(paths["zip_path"]) and os.path.exists(manifest_path) and os.path.exists(deploy_path)
+    baseline_ready = output_path_exists(paths["zip_path"], output_dir) and output_path_exists(manifest_path, output_dir) and output_path_exists(deploy_path, output_dir)
     if only_removed:
-        baseline_ready = os.path.exists(removed_manifest_path) and os.path.exists(deploy_path)
+        baseline_ready = output_path_exists(removed_manifest_path, output_dir) and output_path_exists(deploy_path, output_dir)
 
     if baseline_ready:
-        changed = read_manifest(manifest_path) if not only_removed else []
-        removed = read_manifest(removed_manifest_path) if os.path.exists(removed_manifest_path) else []
+        changed = read_output_manifest(manifest_path, output_dir) if not only_removed else []
+        removed = read_output_manifest(removed_manifest_path, output_dir) if output_path_exists(removed_manifest_path, output_dir) else []
         if only_removed:
-            if winscp and not os.path.exists(winscp_path):
+            if winscp and not output_path_exists(winscp_path, output_dir):
                 winscp_path = generate_winscp_script(
                     removed_manifest_path=removed_manifest_path,
                     remote_base_path=remote_base_path,
@@ -481,14 +493,15 @@ def run_diff(
                 changed_files=[],
                 removed_files=removed,
                 output_dir=output_dir,
-                removed_manifest_path=removed_manifest_path if os.path.exists(removed_manifest_path) else None,
-                deploy_script_path=deploy_path if os.path.exists(deploy_path) else None,
-                winscp_script_path=winscp_path if os.path.exists(winscp_path) else None,
+                removed_manifest_path=removed_manifest_path if output_path_exists(removed_manifest_path, output_dir) else None,
+                deploy_script_path=deploy_path if output_path_exists(deploy_path, output_dir) else None,
+                winscp_script_path=winscp_path if output_path_exists(winscp_path, output_dir) else None,
                 message="Reused existing removed-file artifacts.",
             )
 
-        if summary and not os.path.exists(summary_path):
-            removed_files = read_manifest(removed_manifest_path) if os.path.exists(removed_manifest_path) else []
+        if summary and not output_path_exists(summary_path, output_dir):
+            removed_files = read_output_manifest(removed_manifest_path, output_dir) if output_path_exists(removed_manifest_path, output_dir) else []
+            summary_path = safe_output_path(summary_path, output_dir)
             with open(summary_path, "w", encoding="utf-8") as rb:
                 rb.write(f"# YOURLS Patch Summary (from {old_tag} version to {new_tag})\n\n")
                 rb.write(f"Number of files in OLD: {count_all_files(old_release.root_dir)}\n")
@@ -513,14 +526,14 @@ def run_diff(
             total_old=count_all_files(old_release.root_dir),
             total_new=count_all_files(new_release.root_dir),
             changed_files=changed,
-            removed_files=read_manifest(removed_manifest_path) if os.path.exists(removed_manifest_path) else [],
+            removed_files=read_output_manifest(removed_manifest_path, output_dir) if output_path_exists(removed_manifest_path, output_dir) else [],
             output_dir=output_dir,
-            zip_path=paths["zip_path"] if os.path.exists(paths["zip_path"]) else None,
-            manifest_path=manifest_path if os.path.exists(manifest_path) else None,
-            removed_manifest_path=removed_manifest_path if os.path.exists(removed_manifest_path) else None,
-            summary_path=summary_path if os.path.exists(summary_path) else None,
-            deploy_script_path=deploy_path if os.path.exists(deploy_path) else None,
-            winscp_script_path=winscp_path if os.path.exists(winscp_path) else None,
+            zip_path=paths["zip_path"] if output_path_exists(paths["zip_path"], output_dir) else None,
+            manifest_path=manifest_path if output_path_exists(manifest_path, output_dir) else None,
+            removed_manifest_path=removed_manifest_path if output_path_exists(removed_manifest_path, output_dir) else None,
+            summary_path=summary_path if output_path_exists(summary_path, output_dir) else None,
+            deploy_script_path=deploy_path if output_path_exists(deploy_path, output_dir) else None,
+            winscp_script_path=winscp_path if output_path_exists(winscp_path, output_dir) else None,
             message="Reused existing patch artifacts.",
         )
 
@@ -591,6 +604,7 @@ def run_diff(
     )
 
     if summary:
+        summary_path = safe_output_path(summary_path, output_dir)
         with open(summary_path, "w", encoding="utf-8") as rb:
             rb.write(f"# YOURLS Patch Summary (from {old_tag} version to {new_tag})\n\n")
             rb.write(f"Number of files in OLD: {total_old}\n")
