@@ -72,7 +72,17 @@ def safe_name(value: str) -> str:
     return sanitized or "unknown"
 
 
-def ensure_dir(path: str) -> str:
+def _ensure_within_base(path: str, base: str) -> str:
+    target_real = os.path.realpath(os.path.expanduser(path))
+    base_real = os.path.realpath(os.path.expanduser(base))
+    if target_real != base_real and not target_real.startswith(base_real + os.sep):
+        raise ValueError(f"Refusing to create directory outside allowed base: {path}")
+    return target_real
+
+
+def ensure_dir(path: str, base_dir: str | None = None) -> str:
+    if base_dir is not None:
+        path = _ensure_within_base(path, base_dir)
     os.makedirs(path, exist_ok=True)
     return path
 
@@ -173,7 +183,7 @@ def fetch_releases(verify_ssl: bool, cache_dir: str | None = None, max_age_secon
             break
         page += 1
 
-    ensure_dir(os.path.dirname(cache_file))
+    ensure_dir(os.path.dirname(cache_file), base_dir=cache_dir or DEFAULT_CACHE_DIR)
     with open(cache_file, "w", encoding="utf-8") as f:
         json.dump(releases, f, indent=2)
     return releases
@@ -181,7 +191,7 @@ def fetch_releases(verify_ssl: bool, cache_dir: str | None = None, max_age_secon
 
 def extract_zip(zip_path: str, extract_to: str) -> str:
     """Extract the ZIP file at zip_path into extract_to and return the main folder path."""
-    ensure_dir(extract_to)
+    ensure_dir(extract_to, base_dir=os.path.dirname(extract_to))
     marker = os.path.join(extract_to, ".complete")
     if os.path.exists(marker):
         subdirs = [d for d in os.listdir(extract_to) if os.path.isdir(os.path.join(extract_to, d))]
@@ -238,7 +248,7 @@ def collect_removed(old_dir: str, new_dir: str) -> list[str]:
 
 def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: str) -> None:
     """Write a manifest file listing the changed files (paths relative to new_root)."""
-    ensure_dir(os.path.dirname(manifest_path))
+    ensure_dir(os.path.dirname(manifest_path), base_dir=os.path.dirname(manifest_path))
     with open(manifest_path, "w", encoding="utf-8") as mf:
         for full in sorted(changed_files):
             rel = os.path.relpath(full, new_root)
@@ -247,7 +257,7 @@ def write_manifest(changed_files: Iterable[str], new_root: str, manifest_path: s
 
 
 def write_removed_manifest(removed_files: Iterable[str], old_root: str, removed_manifest_path: str) -> None:
-    ensure_dir(os.path.dirname(removed_manifest_path))
+    ensure_dir(os.path.dirname(removed_manifest_path), base_dir=os.path.dirname(removed_manifest_path))
     with open(removed_manifest_path, "w", encoding="utf-8") as rmf:
         for full in sorted(removed_files):
             rel = os.path.relpath(full, old_root)
@@ -257,7 +267,7 @@ def write_removed_manifest(removed_files: Iterable[str], old_root: str, removed_
 
 def create_diff_zip(changed_files: Iterable[str], new_root: str, zip_output: str) -> None:
     """Create a ZIP archive containing only the changed files."""
-    ensure_dir(os.path.dirname(zip_output))
+    ensure_dir(os.path.dirname(zip_output), base_dir=os.path.dirname(zip_output))
     print(f"→ Creating package {zip_output}")
     count = 0
     with zipfile.ZipFile(zip_output, "w", compression=zipfile.ZIP_DEFLATED) as z:
@@ -398,8 +408,8 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
 def prepare_release(tag: str, verify_ssl: bool, cache_dir: str | None = None) -> ReleaseSnapshot:
     """Download and extract a release, reusing cached artifacts when present."""
     root_cache = cache_dir or DEFAULT_CACHE_DIR
-    archives_dir = ensure_dir(cache_path("archives", cache_dir=root_cache))
-    extracted_dir = ensure_dir(cache_path("extracted", cache_dir=root_cache))
+    archives_dir = ensure_dir(cache_path("archives", cache_dir=root_cache), base_dir=root_cache)
+    extracted_dir = ensure_dir(cache_path("extracted", cache_dir=root_cache), base_dir=root_cache)
     safe_tag = safe_filename_component(tag)
     archive_path = os.path.join(archives_dir, f"{safe_tag}.zip")
     extract_dir = os.path.join(extracted_dir, safe_tag)
@@ -436,7 +446,7 @@ def run_diff(
     if old_tag == new_tag:
         raise ValueError(f"Old tag '{old_tag}' and new tag '{new_tag}' are identical. Nothing to do.")
 
-    ensure_dir(output_dir)
+    ensure_dir(output_dir, base_dir=output_dir)
     paths = artifact_paths(output_dir, old_tag, new_tag, output_name=output_name)
     zip_name = paths["zip_name"]
     manifest_path = paths["manifest_path"]
