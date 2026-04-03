@@ -126,13 +126,13 @@ def cache_path(*parts: str, cache_dir: str | None = None) -> str:
     return os.path.join(base, *parts)
 
 
-def download_zip(tag: str, dest_path: str, verify_ssl: bool) -> str:
+def download_zip(tag: str, dest_path: str, verify_ssl: bool, cache_dir: str | None = None) -> str:
     """Download the ZIP archive for the given YOURLS release tag to dest_path."""
     url = ZIP_URL_TEMPLATE.format(tag=tag)
     print(f"→ Downloading {tag} from {url}")
     r = requests.get(url, stream=True, verify=verify_ssl, timeout=(10, 120))
     r.raise_for_status()
-    safe_dest = _ensure_within_base(dest_path, DEFAULT_CACHE_DIR)
+    safe_dest = _ensure_within_base(dest_path, cache_dir or DEFAULT_CACHE_DIR)
     with open(safe_dest, "wb") as f:
         for chunk in r.iter_content(1024 * 1024):
             if chunk:
@@ -425,7 +425,7 @@ def prepare_release(tag: str, verify_ssl: bool, cache_dir: str | None = None) ->
     archive_path = os.path.join(archives_dir, f"{safe_tag}.zip")
     extract_dir = os.path.join(extracted_dir, safe_tag)
     if not os.path.exists(archive_path):
-        download_zip(tag, archive_path, verify_ssl)
+        download_zip(tag, archive_path, verify_ssl, cache_dir=root_cache)
     root_dir = extract_zip(archive_path, extract_dir)
     return ReleaseSnapshot(tag=tag, archive_path=archive_path, extract_dir=extract_dir, root_dir=root_dir)
 
