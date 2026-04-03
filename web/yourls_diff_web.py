@@ -54,14 +54,6 @@ def _safe_served_path(base_dir, rel_dir, rel_name):
     return safe_target
 
 
-def _open_served_file(base_dir, rel_dir, rel_name, mode, **kwargs):
-    return open(_safe_served_path(base_dir, rel_dir, rel_name), mode, **kwargs)
-
-
-def _open_text_target(path, base_dir):
-    return open(_safe_served_path(base_dir, "", os.path.relpath(path, base_dir)), "r", encoding="utf-8", errors="replace")
-
-
 def _download_link(path):
     if not path:
         return None
@@ -919,13 +911,13 @@ def _serve_file(environ, start_response, base_dir, rel_dir, rel_name, attachment
     disposition = "attachment" if attachment else "inline"
     headers.append(("Content-Disposition", f'{disposition}; filename="{_safe_header_filename(target)}"'))
     start_response("200 OK", headers)
-    rel_target = os.path.relpath(target, base_dir)
-    with _open_served_file(base_dir, "", rel_target, "rb") as f:
+    with open(target, "rb") as f:
         return [f.read()]
 
 
 def _render_text_view(target_path, title, back_url=None):
-    with _open_text_target(target_path, OUTPUT_DIR) as f:
+    safe_target = _safe_served_path(OUTPUT_DIR, "", os.path.relpath(target_path, OUTPUT_DIR))
+    with open(safe_target, "r", encoding="utf-8", errors="replace") as f:
         content = f.read()
     safe_back_url = back_url if back_url and back_url.startswith("/") else "/"
     return f"""<!doctype html>
