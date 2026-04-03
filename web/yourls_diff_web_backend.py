@@ -269,12 +269,17 @@ def safe_output_path(path: str, output_dir: str) -> str:
     return _ensure_within_base(path, output_dir)
 
 
+def open_output_text(path: str, output_dir: str, mode: str):
+    return open(safe_output_path(path, output_dir), mode, encoding="utf-8")
+
+
 def output_path_exists(path: str, output_dir: str) -> bool:
     return os.path.exists(safe_output_path(path, output_dir))
 
 
 def read_output_manifest(path: str, output_dir: str) -> list[str]:
-    return read_manifest(safe_output_path(path, output_dir))
+    with open_output_text(path, output_dir, "r") as f:
+        return [line.strip() for line in f if line.strip()]
 
 
 def create_diff_zip(changed_files: Iterable[str], new_root: str, zip_output: str) -> None:
@@ -384,15 +389,15 @@ def generate_winscp_script(removed_manifest_path: str, remote_base_path: str, ho
     """
     Generate a WinSCP script to download and delete files listed in the removed manifest.
     """
-    manifest_path = _ensure_within_base(removed_manifest_path, os.path.dirname(removed_manifest_path))
+    manifest_path = safe_output_path(removed_manifest_path, os.path.dirname(removed_manifest_path))
     script_dir = os.path.dirname(manifest_path)
     local_backup_dir = ensure_dir(os.path.join(script_dir, "removed_backup"), base_dir=script_dir)
-    script_name = _ensure_within_base(os.path.splitext(manifest_path)[0] + ".winscp.txt", script_dir)
+    script_name = safe_output_path(os.path.splitext(manifest_path)[0] + ".winscp.txt", script_dir)
 
-    with open(manifest_path, "r", encoding="utf-8") as f:
+    with open_output_text(manifest_path, script_dir, "r") as f:
         files = [line.strip() for line in f if line.strip()]
 
-    with open(script_name, "w", encoding="utf-8") as wsc:
+    with open_output_text(script_name, script_dir, "w") as wsc:
         wsc.write("option batch on\n")
         wsc.write("option confirm off\n")
         wsc.write(f"open sftp://{user}@{host}/\n")
