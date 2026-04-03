@@ -68,7 +68,8 @@ class DiffArtifacts:
 
 
 def safe_name(value: str) -> str:
-    return SAFE_NAME_RE.sub("_", value)
+    sanitized = SAFE_NAME_RE.sub("_", str(value)).strip("._-")
+    return sanitized or "unknown"
 
 
 def ensure_dir(path: str) -> str:
@@ -76,11 +77,19 @@ def ensure_dir(path: str) -> str:
     return path
 
 
+def safe_filename_component(value: str) -> str:
+    return safe_name(value)
+
+
 def default_zip_name(old_tag: str, new_tag: str) -> str:
-    return f"YOURLS-update-{old_tag}-to-{new_tag}.zip"
+    safe_old = safe_filename_component(old_tag)
+    safe_new = safe_filename_component(new_tag)
+    return f"YOURLS-update-{safe_old}-to-{safe_new}.zip"
 
 
 def artifact_paths(output_dir: str, old_tag: str, new_tag: str, output_name: str | None = None) -> dict[str, str]:
+    safe_old = safe_filename_component(old_tag)
+    safe_new = safe_filename_component(new_tag)
     zip_name = output_name or default_zip_name(old_tag, new_tag)
     base_name = os.path.splitext(zip_name)[0]
     return {
@@ -89,7 +98,7 @@ def artifact_paths(output_dir: str, old_tag: str, new_tag: str, output_name: str
         "manifest_path": os.path.join(output_dir, base_name + ".txt"),
         "removed_manifest_path": os.path.join(output_dir, base_name + ".removed.txt"),
         "summary_path": os.path.join(output_dir, base_name + ".summary.txt"),
-        "deploy_script_path": os.path.join(output_dir, f"YOURLS-deploy-{old_tag}-to-{new_tag}.sh"),
+        "deploy_script_path": os.path.join(output_dir, f"YOURLS-deploy-{safe_old}-to-{safe_new}.sh"),
         "winscp_script_path": os.path.splitext(os.path.join(output_dir, base_name + ".removed.txt"))[0] + ".winscp.txt",
     }
 
@@ -271,7 +280,9 @@ def generate_deploy_script(
     """
     Generate a Bash deployment script. If only_removed is True, include only the file removal logic.
     """
-    script_filename = os.path.join(output_dir or os.getcwd(), f"YOURLS-deploy-{old_tag}-to-{new_tag}.sh")
+    safe_old = safe_filename_component(old_tag)
+    safe_new = safe_filename_component(new_tag)
+    script_filename = os.path.join(output_dir or os.getcwd(), f"YOURLS-deploy-{safe_old}-to-{safe_new}.sh")
     lines = [
         "#!/bin/bash",
         "",
@@ -389,7 +400,7 @@ def prepare_release(tag: str, verify_ssl: bool, cache_dir: str | None = None) ->
     root_cache = cache_dir or DEFAULT_CACHE_DIR
     archives_dir = ensure_dir(cache_path("archives", cache_dir=root_cache))
     extracted_dir = ensure_dir(cache_path("extracted", cache_dir=root_cache))
-    safe_tag = safe_name(tag)
+    safe_tag = safe_filename_component(tag)
     archive_path = os.path.join(archives_dir, f"{safe_tag}.zip")
     extract_dir = os.path.join(extracted_dir, safe_tag)
     if not os.path.exists(archive_path):

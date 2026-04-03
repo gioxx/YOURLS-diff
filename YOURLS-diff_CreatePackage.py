@@ -31,6 +31,7 @@ import argparse
 import os
 import sys
 import tempfile
+import re
 import requests
 import urllib3
 import zipfile
@@ -38,6 +39,12 @@ import filecmp
 
 GITHUB_API_LATEST = "https://api.github.com/repos/YOURLS/YOURLS/releases/latest"
 ZIP_URL_TEMPLATE = "https://github.com/YOURLS/YOURLS/archive/refs/tags/{tag}.zip"
+SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
+
+
+def safe_filename_component(value):
+    sanitized = SAFE_NAME_RE.sub("_", str(value)).strip("._-")
+    return sanitized or "unknown"
 
 def download_zip(tag, dest_path, verify_ssl):
     """Download the ZIP archive for the given YOURLS release tag to dest_path."""
@@ -135,7 +142,9 @@ def generate_deploy_script(old_tag, new_tag, zip_name, manifest_name,
     """
     Generate a Bash deployment script. If only_removed is True, include only the file removal logic.
     """
-    script_filename = f"YOURLS-deploy-{old_tag}-to-{new_tag}.sh"
+    safe_old = safe_filename_component(old_tag)
+    safe_new = safe_filename_component(new_tag)
+    script_filename = f"YOURLS-deploy-{safe_old}-to-{safe_new}.sh"
     lines = [
         "#!/bin/bash",
         "",
@@ -294,15 +303,15 @@ def main():
         sys.exit(0)
 
     # Determine output names
-    zip_name = args.output or f"YOURLS-update-{old_tag}-to-{new_tag}.zip"
+    zip_name = args.output or f"YOURLS-update-{safe_filename_component(old_tag)}-to-{safe_filename_component(new_tag)}.zip"
     base_name = os.path.splitext(zip_name)[0]
     manifest_name = base_name + ".txt"
     removed_manifest = base_name + ".removed.txt"
     release_body_path = base_name + ".summary.txt"
 
     with tempfile.TemporaryDirectory() as tmp:
-        old_zip = os.path.join(tmp, f"{old_tag}.zip")
-        new_zip = os.path.join(tmp, f"{new_tag}.zip")
+        old_zip = os.path.join(tmp, f"{safe_filename_component(old_tag)}.zip")
+        new_zip = os.path.join(tmp, f"{safe_filename_component(new_tag)}.zip")
         download_zip(old_tag, old_zip, verify_ssl)
         download_zip(new_tag, new_zip, verify_ssl)
 
