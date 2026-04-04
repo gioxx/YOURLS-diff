@@ -17,7 +17,6 @@ If you want to take advantage of the patches that are automatically created by t
 - Generates a `.removed.txt` file if any files were deleted.  
 - Creates a Bash deployment script (`.sh`) that allows you to update your YOURLS instance via rsync and SSH.  
 - Reuses cached YOURLS release ZIPs and extracted archives across comparisons.  
-- Includes an experimental but fully usable web UI for selecting two releases and generating the same artifacts from a browser, especially when run via Docker.  
 - Supports SSL certificate verification with an option to disable it.  
 - (Optional) Generates a WinSCP-compatible script (`.winscp.txt`) for Windows users to download and delete removed files via SFTP.
 
@@ -46,30 +45,6 @@ If you want to take advantage of the patches that are automatically created by t
    ```bash
    pip install -r requirements.txt
    ```
-
-## Web UI
-
-You can also run the browser interface, which uses the same comparison engine as the CLI and stores downloaded release ZIPs in a local cache.
-
-The web UI should be considered an experiment: it is fully usable and does exactly what it is supposed to do, but it may not receive major future work.
-
-```bash
-python -m web.yourls_diff_web
-```
-
-The app listens on `http://127.0.0.1:8000` by default and stores outputs under `data/` unless you override the environment variables.
-
-## Docker
-
-The recommended way to use the web UI is via Docker.
-
-```bash
-docker compose up --build
-```
-
-Mounting `./data:/data` keeps the cache and generated artifacts across restarts.
-
-This is the most practical setup for the current web UI and the one that is expected to remain supported.
 
 ## Usage
 
@@ -131,12 +106,7 @@ Each script or method will:
 
 ```text
 ├── YOURLS-diff_CreatePackage.py   # CLI entry point
-├── web/
-│   ├── yourls_diff_web_backend.py # Shared compare/download backend for the web UI
-│   └── yourls_diff_web.py         # Browser UI entry point
 ├── requirements.txt               # Python dependencies
-├── Dockerfile                     # Container image definition
-├── docker-compose.yml             # Local container runtime
 ├── LICENSE                        # License used for this repository
 ├── README.md                      # This documentation
 └── README_IT.md                   # Italian documentation
