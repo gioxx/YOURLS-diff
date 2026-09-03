@@ -48,6 +48,8 @@ If you want to take advantage of the patches that are automatically created by t
 
 ## Usage
 
+All generated files (ZIP, manifest, `.removed.txt`, deployment script, summary, WinSCP script) are written to the `output/` directory by default. That directory is listed in `.gitignore`. Use `--output-dir` to change it.
+
 The main script is called `YOURLS-diff_CreatePackage.py` and accepts the following options:
 
 | Option           | Description                                                                                        | Example                              |
@@ -55,6 +57,7 @@ The main script is called `YOURLS-diff_CreatePackage.py` and accepts the followi
 | `--old`          | **(required)** Tag of the starting release (e.g., `1.8.10`).                                       | `--old 1.8.10`                       |
 | `--new`          | Tag of the target release. If omitted, `latest` is used.                                           | `--new 1.9.0`                        |
 | `--output`       | Output ZIP filename. Default: `YOURLS-update-OLD-to-NEW.zip`.                                      | `--output diff.zip`                  |
+| `--output-dir`   | Directory where all generated files are placed. Default: `output`.                                | `--output-dir dist`                 |
 | `--no-verify`    | Disable SSL certificate verification (not recommended).                                            | `--no-verify`                        |
 | `--summary`      | Generate a summary text file with patch details.                                                   | `--summary`                          |
 | `--only-removed` | Only generate the `.removed.txt` file (if any).<br>Also generates a deployment script to remove the files from the server. | `--only-removed` |
@@ -66,7 +69,7 @@ The main script is called `YOURLS-diff_CreatePackage.py` and accepts the followi
   ```bash
   python YOURLS-diff_CreatePackage.py --old 1.8.10
   ```
-  Produces:
+  Produces (inside `output/`):
   - `YOURLS-update-1.8.10-to-<latest>.zip`  
   - `YOURLS-update-1.8.10-to-<latest>.txt` (manifest)
 
@@ -107,6 +110,7 @@ Each script or method will:
 ```text
 ├── YOURLS-diff_CreatePackage.py   # CLI entry point
 ├── requirements.txt               # Python dependencies
+├── output/                        # Generated files (git-ignored)
 ├── LICENSE                        # License used for this repository
 ├── README.md                      # This documentation
 └── README_IT.md                   # Italian documentation

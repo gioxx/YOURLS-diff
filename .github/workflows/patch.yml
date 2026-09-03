@@ -80,30 +80,30 @@ jobs:
         run: |
           OLD="${{ needs.check.outputs.old }}"
           NEW="${{ needs.check.outputs.new }}"
-          python YOURLS-diff_CreatePackage.py --old "$OLD" --new "$NEW" --summary
+          python YOURLS-diff_CreatePackage.py --old "$OLD" --new "$NEW" --summary --output-dir output
 
       - name: Debug final file list
-        run: ls -l
+        run: ls -l output
 
       - name: Determine which artifacts to upload
         id: build_artifacts
         run: |
           OLD="${{ needs.check.outputs.old }}"
           NEW="${{ needs.check.outputs.new }}"
-          FILES="YOURLS-update-$OLD-to-$NEW.zip,YOURLS-update-$OLD-to-$NEW.txt"
+          FILES="output/YOURLS-update-$OLD-to-$NEW.zip,output/YOURLS-update-$OLD-to-$NEW.txt"
 
-          if [ -f "YOURLS-update-$OLD-to-$NEW.summary.txt" ]; then
-            FILES="$FILES,YOURLS-update-$OLD-to-$NEW.summary.txt"
+          if [ -f "output/YOURLS-update-$OLD-to-$NEW.summary.txt" ]; then
+            FILES="$FILES,output/YOURLS-update-$OLD-to-$NEW.summary.txt"
           fi
 
-          if [ -f "YOURLS-update-$OLD-to-$NEW.removed.txt" ]; then
-            FILES="$FILES,YOURLS-update-$OLD-to-$NEW.removed.txt"
+          if [ -f "output/YOURLS-update-$OLD-to-$NEW.removed.txt" ]; then
+            FILES="$FILES,output/YOURLS-update-$OLD-to-$NEW.removed.txt"
           else
             echo "No removed file list generated: no files were removed between $OLD and $NEW."
           fi
 
-          if [ -f "YOURLS-deploy-$OLD-to-$NEW.sh" ]; then
-            FILES="$FILES,YOURLS-deploy-$OLD-to-$NEW.sh"
+          if [ -f "output/YOURLS-deploy-$OLD-to-$NEW.sh" ]; then
+            FILES="$FILES,output/YOURLS-deploy-$OLD-to-$NEW.sh"
           fi
 
           echo "artifact_files=$FILES" >> "$GITHUB_OUTPUT"
@@ -124,7 +124,7 @@ jobs:
         with:
           tag: ${{ needs.check.outputs.new }}
           name: "${{ needs.check.outputs.old }} to ${{ needs.check.outputs.new }}"
-          bodyFile: YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.summary.txt
+          bodyFile: output/YOURLS-update-${{ needs.check.outputs.old }}-to-${{ needs.check.outputs.new }}.summary.txt
           draft: false
           prerelease: false
           artifacts: ${{ steps.build_artifacts.outputs.artifact_files }}

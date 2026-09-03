@@ -48,6 +48,8 @@ Se vuoi approfittare delle patch create automaticamente da questo script e da qu
 
 ## Utilizzo
 
+Tutti i file generati (ZIP, manifest, `.removed.txt`, script di deploy, summary, script WinSCP) vengono scritti nella cartella `output/` per impostazione predefinita. Quella cartella è elencata in `.gitignore`. Usa `--output-dir` per cambiarla.
+
 Lo script principale si chiama `YOURLS-diff_CreatePackage.py` e accetta le seguenti opzioni:
 
 | Opzione           | Descrizione                                                                                       | Esempio                              |
@@ -55,6 +57,7 @@ Lo script principale si chiama `YOURLS-diff_CreatePackage.py` e accetta le segue
 | `--old`           | **(obbligatorio)** Tag della versione di partenza (es: `1.8.10`).                                  | `--old 1.8.10`                       |
 | `--new`           | Tag della versione di destinazione. Se omesso, viene usato `latest`.                              | `--new 1.9.0`                        |
 | `--output`        | Nome del file ZIP in uscita. Default: `YOURLS-update-OLD-to-NEW.zip`.                             | `--output diff.zip`                 |
+| `--output-dir`    | Cartella in cui vengono scritti tutti i file generati. Default: `output`.                         | `--output-dir dist`                |
 | `--no-verify`     | Disattiva la verifica SSL (non consigliato).                                                      | `--no-verify`                       |
 | `--summary`       | Genera un file `.summary.txt` con il riepilogo delle modifiche.                                   | `--summary`                         |
 | `--only-removed`  | Genera solo il file `.removed.txt` (se ci sono file eliminati).<br>Genera anche lo script di rimozione remoto (`.sh`). | `--only-removed` |
@@ -104,6 +107,7 @@ Ogni metodo/script ti consente di:
 ```text
 ├── YOURLS-diff_CreatePackage.py   # Entry point CLI
 ├── requirements.txt               # Dipendenze Python
+├── output/                        # File generati (ignorati da git)
 ├── LICENSE                        # Licenza del progetto
 ├── README.md                      # Documentazione in inglese
 └── README_IT.md                   # Documentazione in italiano

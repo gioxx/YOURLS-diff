@@ -8,8 +8,8 @@ between two YOURLS releases (and removed files, if any), ready for FTP upload.
 This Python script also generate a Bash deployment script to upload the changed files using rsync.
 
 Usage:
-    python YOURLS-diff_CreatePackage.py --old <OLD_TAG> [--new <NEW_TAG>] [--output <ZIP_NAME>] [--no-verify] [--summary]
-    
+    python YOURLS-diff_CreatePackage.py --old <OLD_TAG> [--new <NEW_TAG>] [--output <ZIP_NAME>] [--output-dir <DIR>] [--no-verify] [--summary]
+
 Example:
     python YOURLS-diff_CreatePackage.py --old 1.8.10
 
@@ -17,6 +17,7 @@ Options:
     --old           Tag of the starting release (required, e.g. 1.8.10)
     --new           Tag of the target release (default: latest)
     --output        Output ZIP filename (default: YOURLS-update-OLD-to-NEW.zip)
+    --output-dir    Directory where all generated files are placed (default: output)
     --no-verify     Disable SSL certificate verification (not recommended)
     --summary       Generate a summary text file with patch details (e.g. for use in release notes)
     --only-removed  Only generate the .removed.txt file (if any). Skip all other outputs. Also generates a deployment script to remove the files from the server.
@@ -138,13 +139,18 @@ def create_diff_zip(changed_files, new_root, zip_output):
     print(f"→ Done. ZIP contains {count} file.")
 
 def generate_deploy_script(old_tag, new_tag, zip_name, manifest_name,
-                           removed_manifest_name=None, only_removed=False):
+                           removed_manifest_name=None, only_removed=False,
+                           output_dir="."):
     """
     Generate a Bash deployment script. If only_removed is True, include only the file removal logic.
+
+    The script is written into output_dir and references the ZIP/manifest by bare
+    filename, so it is meant to be run from within that same directory.
     """
     safe_old = safe_filename_component(old_tag)
     safe_new = safe_filename_component(new_tag)
     script_filename = f"YOURLS-deploy-{safe_old}-to-{safe_new}.sh"
+    script_path = os.path.join(output_dir, script_filename)
     lines = [
         "#!/bin/bash",
         "",
@@ -213,21 +219,17 @@ def generate_deploy_script(old_tag, new_tag, zip_name, manifest_name,
 
     lines += ["echo \"Deployment completed!\""]
 
-    with open(script_filename, "w", encoding="utf-8") as f:
+    with open(script_path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
-    os.chmod(script_filename, 0o755)
-    print(f"→ Deployment script generated: {script_filename}")
+    os.chmod(script_path, 0o755)
+    print(f"→ Deployment script generated: {script_path}")
 
-def generate_winscp_script(removed_manifest_path, remote_base_path, host, user):
+def generate_winscp_script(removed_manifest_path, remote_base_path, host, user, output_dir="."):
     """
     Generate a WinSCP script to download and delete files listed in the removed manifest,
-    preserving folder structure locally, under a 'removed_backup' directory near the Python script.
+    preserving folder structure locally, under a 'removed_backup' directory inside output_dir.
     """
-    import pathlib
-
-    # Directory of this Python script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    local_backup_dir = os.path.join(script_dir, "removed_backup")
+    local_backup_dir = os.path.join(output_dir, "removed_backup")
 
     # Make sure the base local backup dir exists
     os.makedirs(local_backup_dir, exist_ok=True)
@@ -273,6 +275,8 @@ def main():
                         help="Tag of the target release (if omitted, 'latest' is used).")
     parser.add_argument("--output", default=None,
                         help="Output ZIP filename (default: YOURLS-update-OLD-to-NEW.zip).")
+    parser.add_argument("--output-dir", default="output",
+                        help="Directory where all generated files are placed (default: output).")
     parser.add_argument("--no-verify",action="store_true",
                         help="Disable SSL certificate verification (not recommended).")
     parser.add_argument("--summary",action="store_true",
@@ -302,12 +306,22 @@ def main():
         print(f"Old tag '{old_tag}' and new tag '{new_tag}' are identical. Nothing to do.")
         sys.exit(0)
 
-    # Determine output names
-    zip_name = args.output or f"YOURLS-update-{safe_filename_component(old_tag)}-to-{safe_filename_component(new_tag)}.zip"
+    # Prepare the output directory (everything the script generates goes here)
+    out_dir = args.output_dir
+    os.makedirs(out_dir, exist_ok=True)
+    print(f"→ Output directory: {out_dir}")
+
+    # Determine output names (bare filenames, then full paths inside out_dir)
+    zip_name = os.path.basename(args.output) if args.output else f"YOURLS-update-{safe_filename_component(old_tag)}-to-{safe_filename_component(new_tag)}.zip"
     base_name = os.path.splitext(zip_name)[0]
     manifest_name = base_name + ".txt"
-    removed_manifest = base_name + ".removed.txt"
-    release_body_path = base_name + ".summary.txt"
+    removed_manifest_name = base_name + ".removed.txt"
+    summary_name = base_name + ".summary.txt"
+
+    zip_path = os.path.join(out_dir, zip_name)
+    manifest_path = os.path.join(out_dir, manifest_name)
+    removed_manifest_path = os.path.join(out_dir, removed_manifest_name)
+    release_body_path = os.path.join(out_dir, summary_name)
 
     with tempfile.TemporaryDirectory() as tmp:
         old_zip = os.path.join(tmp, f"{safe_filename_component(old_tag)}.zip")
@@ -323,11 +337,11 @@ def main():
 
         if args.only_removed:
             if removed:
-                with open(removed_manifest, "w", encoding="utf-8") as rmf:
+                with open(removed_manifest_path, "w", encoding="utf-8") as rmf:
                     for full in sorted(removed):
                         rel = os.path.relpath(full, old_dir)
                         rmf.write(rel + "\n")
-                print(f"→ Removed files found, list saved to {removed_manifest}")
+                print(f"→ Removed files found, list saved to {removed_manifest_path}")
 
                 # Always generate deploy.sh in --only-removed mode
                 generate_deploy_script(
@@ -335,17 +349,19 @@ def main():
                     new_tag=new_tag,
                     zip_name=zip_name,
                     manifest_name=manifest_name,
-                    removed_manifest_name=removed_manifest,
-                    only_removed=True
+                    removed_manifest_name=removed_manifest_name,
+                    only_removed=True,
+                    output_dir=out_dir
                 )
                 print("→ You can use the generated script to remove the files from the server.")
 
                 if args.winscp:
                     generate_winscp_script(
-                        removed_manifest_path=removed_manifest,
+                        removed_manifest_path=removed_manifest_path,
                         remote_base_path="/var/www/yourls",
                         host="yourserver.com",
-                        user="youruser"
+                        user="youruser",
+                        output_dir=out_dir
                     )
 
                 sys.exit(0)
@@ -367,22 +383,23 @@ def main():
             sys.exit(0)
 
         # Generate external manifest
-        manifest_path = os.path.join(os.getcwd(), manifest_name)
         write_manifest(changed, new_dir, manifest_path)
 
         # Create .removed.txt if needed
         if removed:
-            with open(removed_manifest, "w", encoding="utf-8") as rmf:
+            with open(removed_manifest_path, "w", encoding="utf-8") as rmf:
                 for full in sorted(removed):
                     rel = os.path.relpath(full, old_dir)
                     rmf.write(rel + "\n")
-            print(f"→ Removed files found, list saved to {removed_manifest}")
+            print(f"→ Removed files found, list saved to {removed_manifest_path}")
 
         # Create the diff ZIP
-        create_diff_zip(changed, new_dir, zip_name)
+        create_diff_zip(changed, new_dir, zip_path)
 
         # Generate the deployment script
-        generate_deploy_script(old_tag, new_tag, zip_name, manifest_name, removed_manifest if removed else None)
+        generate_deploy_script(old_tag, new_tag, zip_name, manifest_name,
+                               removed_manifest_name if removed else None,
+                               output_dir=out_dir)
 
         # Create a summary file if requested
         if args.summary:
@@ -407,8 +424,8 @@ def main():
 
             print(f"→ Release summary saved to {release_body_path}")
 
-    print(f"All set: upload {zip_name} via FTP and review {manifest_name} for the list of changed files.")
-    print(f"You can also use the generated YOURLS-deploy-{old_tag}-to-{new_tag}.sh script to upload the files via rsync.")
+    print(f"All set: upload {zip_path} via FTP and review {manifest_path} for the list of changed files.")
+    print(f"You can also use the generated YOURLS-deploy-{safe_filename_component(old_tag)}-to-{safe_filename_component(new_tag)}.sh script in {out_dir}/ to upload the files via rsync.")
 
 if __name__ == "__main__":
     main()
